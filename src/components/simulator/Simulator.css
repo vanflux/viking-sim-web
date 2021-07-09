@@ -1,0 +1,119 @@
+
+
+.simulator {
+    background-color: #1E1E1E;
+    height: 100%;
+}
+
+.inputAsmArea {
+    background-color: #303030;
+    color: rgb(197, 192, 202);
+}
+
+.assembledAsmArea {
+    background-color: #303030;
+    color: rgb(197, 192, 202);
+    min-width: 200px;
+}
+
+.cycleArea {
+    margin: 5px 0px 5px 0px;
+}
+
+.cycleLabel {
+    margin-right: 4px;
+}
+
+.controlLabel {
+    margin: 5px 0px 5px 0px;
+}
+
+.rightArea {
+    min-width: 160px;
+    max-width: 200px;
+}
+
+.controlArea {
+    background-color: #303030;
+    color: rgb(197, 192, 202);
+}
+
+.controlBtn {
+    width: 100%;
+    height: 25px;
+    background-color: rgb(34, 34, 34);
+    color: rgb(197, 192, 202);
+    border: none;
+    margin: 1px 10px;
+    transition: background-color 0.1s, color 0.1s;
+}
+
+.controlBtn:hover {
+    background-color: rgb(22, 22, 22);
+    color: rgb(109, 202, 96);
+}
+
+.delayLabel {
+    padding: 10px 0px 5px 0px;
+}
+
+#delayInput {
+    width: calc(100% - 10px);
+}
+
+.areaTitle {
+    color: rgb(197, 192, 202);
+    background-color: #303030;
+}
+
+.breakpoint {
+    margin-left: 5px;
+    margin-top: 2px;
+    max-width: 15px;
+    max-height: 15px;
+    background-color: red;
+    border-radius: 50%;
+    border: 1px solid black;
+}
+
+.bottomArea {
+    min-height: 200px;
+}
+
+#inputText {
+    background-color: #4d4d4d;
+    color:rgb(197, 192, 202);
+    border: none;
+}
+
+.inputBufferArea {
+    width: 200px;
+}
+
+.inputBufferArea textarea {
+    background-color: #1E1E1E;
+    color: rgb(197, 192, 202);
+    padding: 1px 5px 1px 5px;
+    resize: none;
+    border: none;
+}
+
+.outputArea textarea {
+    background-color: #1E1E1E;
+    color: rgb(197, 192, 202);
+    padding: 1px 5px 1px 5px;
+    resize: none;
+    border: none;
+}
+
+.currentLineRunning {
+    background: rgba(255, 0, 0, 0.45);
+}
+
+.assembledAsmArea, .bottomArea .outputArea, .inputBufferArea {
+    border: 1px solid rgb(58, 58, 58);
+}
+
+* {
+    outline: none;
+}

@@ -1,0 +1,31 @@
+.container {
+  color: rgb(197, 192, 202);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.title {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.content {
+  font-family: 'Consolas';
+  margin: 0px 5px 0px 5px;
+}
+
+.generalRegisterList {
+  padding-top: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pcRegister {
+  color: rgb(109, 202, 96);
+}
+
+.registerContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
