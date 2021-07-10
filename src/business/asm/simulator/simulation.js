@@ -19,6 +19,7 @@ export default class Simulation extends EventEmitter {
         this.waitingInput = false;
         this.stepInterval = 50;
         this.cycles = 0;
+        this.pc = 0;
         this.inputBytes = [];
 
         this.breakpointHandler = defaultBreakpointHandler;

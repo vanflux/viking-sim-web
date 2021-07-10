@@ -138,7 +138,7 @@ class Simulator extends Component {
 						<Assembled simulation={this.simulation} ref={this.assembledRef} />
 						<SymbolTable ref={this.symbolTableRef} />
 						<Box className={styles.rightArea} display="flex" flexDirection="column" justifyContent="space-between" flex="1" overflow="auto">
-							<Registers registerBank={this.registerBank} />
+							<Registers simulation={this.simulation} registerBank={this.registerBank} />
 							<Control simulation={this.simulation} onAssemble={this.onAssemble.bind(this)} onError={this.onControlError.bind(this)} />
 						</Box>
 					</Box>

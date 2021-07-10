@@ -10,7 +10,7 @@ export default class RegisterBank extends EventEmitter {
 
     constructor (registerInfos, registerByteWidth) {
         super();
-        this.registerInfos = Object.assign({ pc: { code: null, aliases: [] }}, registerInfos); // Add the PC special register, if not exists
+        this.registerInfos = registerInfos;
         this.registerByteWidth = registerByteWidth;
         this.setup();
     }

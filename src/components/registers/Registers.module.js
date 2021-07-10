@@ -5,25 +5,44 @@ import utils from '../../utils';
 class Registers extends Component {
   constructor(props) {
     super(props);
+
+    if (!props.registerBank) throw new Error('props.registerBank null');
+    if (!props.simulation) throw new Error('props.simulation null');
+
     this.registerBank = props.registerBank;
+    this.simulation = props.simulation;
 
     this.registerInfos = Object.entries(this.registerBank.getRegisterInfos());
     
     this.state = { };
   }
 
-  render() { 
+  componentDidMount() {
+    let self = this;
+    this.valueUpdateHandler = utils.callLimiter(() => {
+      self.setState({});
+    }, 50);
+    this.registerBank.on('value update', this.valueUpdateHandler);
+    this.simulation.on('pc update', this.valueUpdateHandler);
+  }
+
+  componentWillUnmount() {
+    this.registerBank.off('value update', this.valueUpdateHandler);
+    this.simulation.off('pc update', this.valueUpdateHandler);
+  }
+
+  render() {
     return (
       <div className={styles.container}>
         <div className={styles.title}>Registers</div>
         
         <div className={styles.content}>
           <div className={styles.generalRegisterList}>
-            { this.registerInfos.map(([name], i) => <Register key={i} name={name} registerBank={this.registerBank} />) }
+            { this.registerInfos.map(([name, infos], i) => <Register key={i} name={name} aliases={infos.aliases} value={this.registerBank.getUValue(name)} />) }
           </div>
           
           <div className={styles.pcRegister}>
-            <Register name="pc" registerBank={this.registerBank} />
+            <Register name="pc" aliases={[]} value={this.simulation.getPC()} />
           </div>
         </div>
       </div>
@@ -34,36 +53,14 @@ class Registers extends Component {
 class Register extends Component {
   constructor(props) {
     super(props);
-
-    this.name = props.name;
-    this.registerBank = props.registerBank;
-    this.aliases = this.registerBank.getRegisterInfo(this.name).aliases;
-
-    this.state = { value: 0 };
-  }
-
-  componentDidMount() {
-    let self = this;
-    let changeValue = utils.callLimiter((newValue) => {
-      self.setState({ value: newValue });
-    }, 50);
-
-    this.valueUpdateHandler = ({registerName, newValue}) => {
-      if (registerName !== self.name) return;
-      changeValue(newValue);
-    };
-    this.registerBank.on('value update', this.valueUpdateHandler);
-  }
-
-  componentWillUnmount() {
-    this.registerBank.off('value update', this.valueUpdateHandler);
+    this.props = props;
   }
 
   render() { 
     return (
       <div className={styles.registerContainer}>
-        <div>{this.name}{this.aliases.length > 0 ? (' (' + this.aliases.join(',') + ')') : ''}</div>
-        <div>{this.state.value.toString(16).padStart(4, '0')}</div>
+        <div>{this.props.name}{this.props.aliases.length > 0 ? (' (' + this.props.aliases.join(',') + ')') : ''}</div>
+        <div>{this.props.value.toString(16).padStart(4, '0')}</div>
       </div>
     );
   }
