@@ -180,7 +180,7 @@ export default class Simulation extends EventEmitter {
         this.incrementCycles(1);
         
         if (this.breakpointHandler(this, this.pc)) {
-            this.emit('breakpoint', this, this.pc);
+            this.emit('breakpoint', this.pc);
             await this.stop();
         }
     }

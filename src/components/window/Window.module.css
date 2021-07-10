@@ -6,8 +6,7 @@
   resize: both;
   display: flex;
   flex-direction: column;
-  width: 980px;
-  height: 710px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 .header {

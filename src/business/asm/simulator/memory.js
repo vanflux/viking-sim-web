@@ -24,8 +24,9 @@ class Memory extends EventEmitter {
     }
 
     async reset(...args) {
+        let result = this.storage.reset(...args);
         this.emit('reset');
-        return this.storage.reset(...args);
+        return result;
     }
     
     async getDataLength(...args) {
@@ -47,8 +48,9 @@ class Memory extends EventEmitter {
                 return newValue;
             }
         }
+        let result = this.storage.readByte(address);
         this.emit('storage read byte', address);
-        return this.storage.readByte(address);
+        return result;
     }
     
     async readWord(address) {
@@ -58,8 +60,9 @@ class Memory extends EventEmitter {
                 return newValue;
             }
         }
+        let result = this.storage.readWord(address);
         this.emit('storage read word', address);
-        return this.storage.readWord(address);
+        return result;
     }
 
     async writeByte(address, byte) {
@@ -68,9 +71,9 @@ class Memory extends EventEmitter {
                 return false;
             }
         }
+        let result = this.storage.writeByte(address, byte);
         this.emit('storage write byte', address, byte);
-        this.storage.writeByte(address, byte);
-        return true;
+        return result;
     }
     
     async writeWord(address, word) {
@@ -79,9 +82,9 @@ class Memory extends EventEmitter {
                 return false;
             }
         }
+        let result = this.storage.writeWord(address, word);
         this.emit('storage write word', address, word);
-        this.storage.writeWord(address, word);
-        return true;
+        return result;
     }
 }
 

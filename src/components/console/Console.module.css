@@ -39,6 +39,7 @@
   background-color: #1E1E1E;
   color: rgb(197, 192, 202);
   padding: 1px 5px 1px 5px;
+  height: 100%;
   resize: none;
   border: none;
 }

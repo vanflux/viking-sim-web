@@ -1,0 +1,47 @@
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: #1E1E1E;
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: row-reverse;
+  flex: 1;
+  height: 100%;
+}
+
+.memoryScroll {
+  overflow: auto;
+  min-width: 20px;
+  width: 20px;
+}
+
+.memoryAreaContainer {
+  display: flex;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.memoryArea {
+  width: 100%;
+  height: 100%;
+  color: rgb(197, 192, 202);
+  font-family: Consolas, monaco, monospace;
+}
+
+.memoryData {
+  color: rgb(197, 192, 202);
+}
+
+.memoryRowNumber {
+  color: rgb(122, 243, 122);
+}
+
+.memoryColumnNumber {
+  color: rgb(99, 94, 255);
+}
