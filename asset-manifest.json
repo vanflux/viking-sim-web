@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/vanflux.github.io/viking-sim-web/static/css/main.7124a94b.chunk.css",
+    "main.js": "/vanflux.github.io/viking-sim-web/static/js/main.c11ee765.chunk.js",
+    "main.js.map": "/vanflux.github.io/viking-sim-web/static/js/main.c11ee765.chunk.js.map",
+    "runtime-main.js": "/vanflux.github.io/viking-sim-web/static/js/runtime-main.e1826b94.js",
+    "runtime-main.js.map": "/vanflux.github.io/viking-sim-web/static/js/runtime-main.e1826b94.js.map",
+    "static/js/2.1fc05cdd.chunk.js": "/vanflux.github.io/viking-sim-web/static/js/2.1fc05cdd.chunk.js",
+    "static/js/2.1fc05cdd.chunk.js.map": "/vanflux.github.io/viking-sim-web/static/js/2.1fc05cdd.chunk.js.map",
+    "index.html": "/vanflux.github.io/viking-sim-web/index.html",
+    "static/css/main.7124a94b.chunk.css.map": "/vanflux.github.io/viking-sim-web/static/css/main.7124a94b.chunk.css.map",
+    "static/js/2.1fc05cdd.chunk.js.LICENSE.txt": "/vanflux.github.io/viking-sim-web/static/js/2.1fc05cdd.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e1826b94.js",
+    "static/js/2.1fc05cdd.chunk.js",
+    "static/css/main.7124a94b.chunk.css",
+    "static/js/main.c11ee765.chunk.js"
+  ]
+}
