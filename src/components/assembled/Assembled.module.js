@@ -52,8 +52,9 @@ class Assembled extends Component {
   }
   
   setBreakpoint(pc) {
-    let lineNumber = pc / 2 + 1;
-    
+    if (this.editor == null) return;
+
+    let lineNumber = pc / 2 + 1;    
     let lineCount = this.editor.getModel().getLineCount();
     if (lineNumber <= 0 || lineNumber > lineCount) return;
 
@@ -75,6 +76,8 @@ class Assembled extends Component {
   }
 
   removeBreakpoint(pc) {
+    if (this.editor == null) return;
+
     let bpDec = this.breakpointDecorations[pc];
     if (bpDec) {
       delete this.breakpointDecorations[pc];
@@ -100,10 +103,13 @@ class Assembled extends Component {
   }
 
   setAssembled(text) {
+    if (this.editor == null) return;
     this.editor.setValue(text);
   }
 
   setLineRunning(lineNumber) {
+    if (this.editor == null) return;
+    
     let lineCount = this.editor.getModel().getLineCount();
     if (lineNumber <= 0 || lineNumber > lineCount) {
       this.curLineRunningDecoration = [];

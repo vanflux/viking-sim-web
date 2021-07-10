@@ -6,9 +6,16 @@ class Control extends Component {
   constructor(props) {
     super(props);
 
+    if (!props.simulation) throw new Error('props.simulation null');
+
     this.simulation = props.simulation;
+
+    this.onAutoAssembleChanged = typeof props.onAutoAssembleChanged === 'function' ? props.onAutoAssembleChanged : ()=>{};
     this.onAssemble = typeof props.onAssemble === 'function' ? props.onAssemble : ()=>{};
+    this.onBeforeRun = typeof props.onBeforeRun === 'function' ? props.onBeforeRun : ()=>{};
     this.onError = typeof props.onError === 'function' ? props.onError : ()=>{};
+
+    this.autoAssemble = true;
 
     this.state = {  }
   }
@@ -52,8 +59,8 @@ class Control extends Component {
   }
   
   async runClick() {
-    await this.callH
     try {
+      if (await this.onBeforeRun() === false) return;
       await this.simulation.run();
     } catch (exc) {
       this.onError(exc);
@@ -68,6 +75,16 @@ class Control extends Component {
     }
   }
 
+  autoAssembleChanged(e) {
+    this.autoAssemble = e.target.checked;
+    this.onAutoAssembleChanged(this.autoAssemble);
+    this.setState({});
+  }
+
+  getAutoAssemble() {
+    return this.autoAssemble;
+  }
+
   render() { 
     return (
       <div className={styles.container}>
@@ -79,9 +96,16 @@ class Control extends Component {
             <div>{this.simulation.getCycles()}</div>
           </div>
           
+          <div>
+            <input
+              type="checkbox"
+              checked={this.autoAssemble}
+              onChange={this.autoAssembleChanged.bind(this)}
+            /><span style={{margin: '0px 0px 0px 5px'}}>Auto-assemble</span>
+          </div>
           <button className={styles.btn} onClick={this.assembleClick.bind(this)}>Assemble</button>
           <button className={styles.btn} onClick={this.resetClick.bind(this)}>Reset</button>
-          <button className={styles.btn} onClick={this.stopClick.bind(this)}>Stop</button>
+          <button className={styles.btn} onClick={this.stopClick.bind(this)}>Pause</button>
           <button className={styles.btn} onClick={this.runClick.bind(this)}>Run</button>
           <button className={styles.btn} onClick={this.stepClick.bind(this)}>Step</button>
 

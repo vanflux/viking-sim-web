@@ -176,7 +176,13 @@ class Instruction {
     }
 
     toString() {
-        return this.operation.getName() + ' ' + this.operands.map(operand => operand.getValue()).join(',');
+        return this.operation.getName() + ' ' + this.operands.map(operand => {
+            let value = operand.getValue();
+            if (operand.getType() === Operand.LITERAL) {
+                value = '0x'+utils.signedNumberToHex(value, 1);
+            }
+            return value;
+        }).join(',');
     }
 }
 

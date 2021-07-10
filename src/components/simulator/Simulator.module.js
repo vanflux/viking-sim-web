@@ -19,6 +19,7 @@ import Console from '../console/Console.module';
 import Assembled from '../assembled/Assembled.module';
 import MemoryViewer from '../memoryViewer/MemoryViewer.module';
 import Home from '../home/Home.module';
+import utils from '../../business/utils';
 
 class Simulator extends Component {
 
@@ -28,6 +29,7 @@ class Simulator extends Component {
 		this.programRef = createRef();
 		this.assembledRef = createRef();
 		this.symbolTableRef = createRef();
+		this.controlRef = createRef();
 		this.consoleRef = createRef();
 
 		this.curArchitecture = architectureManager.getViking16Arch();
@@ -136,6 +138,29 @@ class Simulator extends Component {
 		this.consoleRef.current.writeLine(exc);
 	}
 
+	async onBeforeRun() {
+		if (this.simulation.isRunning()) return false;
+		
+		// If simulation is already ended -> reset
+		if (this.simulation.hasEnded()) {
+			await this.simulation.reset();
+			await utils.sleep(100);
+		}
+
+		// If auto-assemble & program changed, assemble
+		let curText = this.programRef.current.getText();
+		if (this.controlRef.current.getAutoAssemble()) {
+			if (this.lastText !== curText) {
+				if (!this.assemble()) {
+					return false;
+				}
+			}
+		}
+		this.lastText = curText;
+
+		return true;
+	}
+
 	render() {
 		return (
 			<div className={styles.container}>
@@ -143,10 +168,10 @@ class Simulator extends Component {
 					<Box display="flex" flexDirection="row" flex="1" overflow="auto">
 						<Program curArchitecture={this.curArchitecture} ref={this.programRef} />
 						<Assembled simulation={this.simulation} ref={this.assembledRef} />
-						<SymbolTable ref={this.symbolTableRef} />
+						<SymbolTable architecture={this.curArchitecture} ref={this.symbolTableRef} />
 						<Box className={styles.rightArea} display="flex" flexDirection="column" justifyContent="space-between" flex="1" overflow="auto">
 							<Registers simulation={this.simulation} registerBank={this.registerBank} />
-							<Control simulation={this.simulation} onAssemble={this.onAssemble.bind(this)} onError={this.onControlError.bind(this)} />
+							<Control simulation={this.simulation} onAssemble={this.onAssemble.bind(this)} onBeforeRun={this.onBeforeRun.bind(this)} onError={this.onControlError.bind(this)} ref={this.controlRef} />
 						</Box>
 					</Box>
 					<Console simulation={this.simulation} onInput={this.onInput.bind(this)} ref={this.consoleRef} />

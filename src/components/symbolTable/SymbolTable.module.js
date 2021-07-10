@@ -1,10 +1,14 @@
 import { DataGrid, GridDensityTypes } from '@material-ui/data-grid';
 import { Component } from 'react';
+import utils from '../../business/utils';
 import styles from './SymbolTable.module.css'
 
 class SymbolTable extends Component {
   constructor(props) {
     super(props);
+
+    if (!props.architecture) throw new Error('props.architecture null');
+    this.architecture = props.architecture;
 
     this.columns = [
       {
@@ -23,7 +27,9 @@ class SymbolTable extends Component {
   }
 
   setSymbolTable(symbolTable) {
-    let newRows = Object.entries(symbolTable).map(([symbolName, symbolValue], id) => Object.assign({ id }, {symbolName, symbolValue}));
+    let newRows = Object.entries(symbolTable).map(([symbolName, symbolValue], id) => {
+      return Object.assign({ id }, {symbolName, symbolValue: '0x'+utils.signedNumberToHex(symbolValue, this.architecture.getByteWidth())});
+    });
     this.setState({ rows: newRows });
   }
 

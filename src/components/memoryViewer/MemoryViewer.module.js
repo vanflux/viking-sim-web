@@ -59,18 +59,18 @@ class MemoryViewer extends Component {
 
     this.onResetHandler = this.reset.bind(this);
 
-    this.onStorageWriteByteHandler = ((address, byte) => {
+    this.onStorageWriteByteHandler = (address, byte) => {
       if (address >= this.dataOffset && address < this.dataOffset + this.dataCount) {
         this.updateByteAt(address, byte);
       }
-    }).bind(this);
+    };
     
-    this.onStorageWriteWordHandler = ((address, word) => {
+    this.onStorageWriteWordHandler = (address, word) => {
       if (address >= this.dataOffset && address < this.dataOffset + this.dataCount) {
         this.updateByteAt(address, (word >> 8) & 0xFF);
         this.updateByteAt(address + 1, word & 0xFF);
       }
-    }).bind(this);
+    };
     
     this.memory.on('reset', this.onResetHandler);
     this.memory.on('storage write byte', this.onStorageWriteByteHandler);
@@ -160,7 +160,7 @@ class MemoryViewer extends Component {
         html += '<td class="' + styles.memoryData + '">' + memDataHtml + '</td>';
       }
       html += '</tr>';
-      if (_x == this.columns) {
+      if (_x === this.columns) {
           _x = 0;
       }
     }

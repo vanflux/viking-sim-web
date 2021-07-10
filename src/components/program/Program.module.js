@@ -27,6 +27,8 @@ class Program extends Component {
 
     if (props.curArchitecture == null) throw new Error('props.curArchitecture null');
 
+    this.onChange = typeof props.onChange === 'function' ? props.onChange : ()=>{};
+
     this.opsNames = operationsManager.getOperationNames();
     this.regNames = props.curArchitecture.getRegisterNames();
 
@@ -107,14 +109,18 @@ class Program extends Component {
 
   onEditorMount(editor, monaco) {
     this.editor = editor;
-    // Nothing
+    
+    this.editor.getModel().onDidChangeContent(this.onChange);
+    this.onChange();
   }
 
   getText() {
+    if (this.editor == null) return '';
     return this.editor.getValue();
   }
 
   setText(text) {
+    if (this.editor == null) return;
     this.editor.setValue(text);
   }
 

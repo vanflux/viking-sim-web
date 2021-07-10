@@ -15,6 +15,7 @@ export default class Simulation extends EventEmitter {
         this.codeExecutionMaxPC = 0;
         this.runId = null;
         this.running = false;
+        this.ended = false;
         this.stopping = false;
         this.waitingInput = false;
         this.stepInterval = 50;
@@ -28,14 +29,15 @@ export default class Simulation extends EventEmitter {
 
     async reset() {
         if (this.running && !this.stopping) await this.stop();
+        this.ended = false;
         this.carry = 0;
         this.setPC(0);
         this.setCycles(0);
         this.resetInput();
         this.registerBank.reset();
+        this.registerBank.setValue('sp', 0xdffe);
         this.memory.reset();
         await this.writeObjCodeMemory();
-        this.registerBank.setValue('sp', 0xdffe);
         this.emit('reset');
     }
 
@@ -148,6 +150,7 @@ export default class Simulation extends EventEmitter {
     }
 
     setRawObjCode(rawObjCode) {
+        if (rawObjCode.length > 0xf000 * 2) throw new Error('Object code too big for the memory');
         this.rawObjCode = rawObjCode;
     }
 
@@ -169,6 +172,7 @@ export default class Simulation extends EventEmitter {
 
         let code = await this.memory.readWord(this.pc);
         if (code === endSimulationCode) {
+            this.ended = true;
             this.emit('run ended');
             return await this.stop();
         }
@@ -208,6 +212,10 @@ export default class Simulation extends EventEmitter {
         return this.stopping;
     }
 
+    hasEnded() {
+        return this.ended;
+    }
+
     async stop() {
         if (!this.running) throw new Error('Simulation already stopped');
         if (this.stopping) throw new Error('Simulation already stopping');
@@ -217,7 +225,7 @@ export default class Simulation extends EventEmitter {
         this.runId = null;
     }
 
-    run() {
+    async run() {
         if (this.running) throw new Error('Simulation already running');
         if (this.stopping) throw new Error('Simulation stopping');
         this.running = true;
