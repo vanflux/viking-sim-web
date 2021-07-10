@@ -1,20 +1,20 @@
 {
   "files": {
     "main.css": "/viking-sim-web/static/css/main.7124a94b.chunk.css",
-    "main.js": "/viking-sim-web/static/js/main.c11ee765.chunk.js",
-    "main.js.map": "/viking-sim-web/static/js/main.c11ee765.chunk.js.map",
+    "main.js": "/viking-sim-web/static/js/main.5bea7bbc.chunk.js",
+    "main.js.map": "/viking-sim-web/static/js/main.5bea7bbc.chunk.js.map",
     "runtime-main.js": "/viking-sim-web/static/js/runtime-main.ecd06abe.js",
     "runtime-main.js.map": "/viking-sim-web/static/js/runtime-main.ecd06abe.js.map",
-    "static/js/2.089fd361.chunk.js": "/viking-sim-web/static/js/2.089fd361.chunk.js",
-    "static/js/2.089fd361.chunk.js.map": "/viking-sim-web/static/js/2.089fd361.chunk.js.map",
+    "static/js/2.43f167ca.chunk.js": "/viking-sim-web/static/js/2.43f167ca.chunk.js",
+    "static/js/2.43f167ca.chunk.js.map": "/viking-sim-web/static/js/2.43f167ca.chunk.js.map",
     "index.html": "/viking-sim-web/index.html",
     "static/css/main.7124a94b.chunk.css.map": "/viking-sim-web/static/css/main.7124a94b.chunk.css.map",
-    "static/js/2.089fd361.chunk.js.LICENSE.txt": "/viking-sim-web/static/js/2.089fd361.chunk.js.LICENSE.txt"
+    "static/js/2.43f167ca.chunk.js.LICENSE.txt": "/viking-sim-web/static/js/2.43f167ca.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.ecd06abe.js",
-    "static/js/2.089fd361.chunk.js",
+    "static/js/2.43f167ca.chunk.js",
     "static/css/main.7124a94b.chunk.css",
-    "static/js/main.c11ee765.chunk.js"
+    "static/js/main.5bea7bbc.chunk.js"
   ]
 }
