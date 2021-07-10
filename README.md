@@ -1,13 +1,13 @@
 # viking-sim-web
 
-Simulador da viking CPU utilizando React & Monaco-Editor.
+Simulador da viking CPU utilizando React.js & Monaco-Editor.
 
 A implementação original foi feita por [sjohann81](https://github.com/sjohann81/) utiliza python2 e pode ser encontrada [AQUI](https://github.com/sjohann81/viking/).
 
 Esta implementação tem o objetivo de fazer algumas melhorias como por exemplo: o editor de código, na implementação original é um editor de texto simples, já nesta, foi utilizado o monaco-editor que possui syntax highlight e outras ferramentas como busca(ctrl+f), desfazer(ctrl+z), refazer(ctrl+y).
 
-Exemplo da aplicação rodando (Versão antiga usando electron):
-![](running.gif)
+Screenshot da aplicação:
+![](screenshot.png)
 
 Operações básicas ✔️:
 | Operação  | Descrição                    | Operação  | Descrição                    |
@@ -44,6 +44,3 @@ Pseudo operações 🟡 (em desenvolvimento):
 | ⭕ bgtu   | Branch if greater than(unsigned)| ⭕ bleu   | Branch if less equal(unsigned)  |
 | ⭕ jmp    | Jump                            | ⭕ jal    | Jump and link                   |
 | ⭕ jmpr   | Jump register                   | ⭕ jalr   | Jump and link register          |
-
-
-Gifs criados com [ezgif.com](https://ezgif.com)
