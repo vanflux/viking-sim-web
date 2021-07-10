@@ -1,4 +1,4 @@
-export default {
+const xor = {
     getName() {
         return 'xor';
     },
@@ -27,3 +27,5 @@ export default {
         );
     },
 }
+
+export default xor;

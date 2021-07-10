@@ -54,8 +54,8 @@ export default class InstructionParser {
 
     // detect type of operand value
     getInstructionOperandValueType(operandValue) {
-        if (typeof operandValue != 'string') return null;
-        if (operandValue.length == 0) return null;
+        if (typeof operandValue !== 'string') return null;
+        if (operandValue.length === 0) return null;
 
         if (this.isRegisterName(operandValue)) return 'register';
         if (utils.isInteger(operandValue)) return 'literal';
@@ -73,10 +73,10 @@ export default class InstructionParser {
             for (let value of operandsValues) {
                 value = value.trim();
                 let type = this.getInstructionOperandValueType(value);
-                if (type == null) {
+                if (type === null) {
                     throw new Error('Operand "' + value + '" cant be parsed');
                 }
-                if (type == Operand.LITERAL) {
+                if (type === Operand.LITERAL) {
                     value = parseInt(value);
                 }
                 operands.push(new Operand(value, type));

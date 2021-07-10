@@ -1,0 +1,30 @@
+.container {
+  border: rgb(22, 22, 22) 3px solid;
+  outline: rgb(117, 117, 117) 1px solid;
+  border-radius: 4px;
+  overflow: hidden;
+  resize: both;
+  display: flex;
+  flex-direction: column;
+  width: 980px;
+  height: 710px;
+}
+
+.header {
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: rgb(22, 22, 22);
+  color:rgb(207, 207, 207);
+}
+
+.title, .description {
+  padding: 5px;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}

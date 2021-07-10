@@ -1,4 +1,4 @@
-export default {
+const bez = {
     getName() {
         return 'bez';
     },
@@ -13,15 +13,17 @@ export default {
     async executeR(simulation, rst, rsa, rsb) {
         let registerBank = simulation.getRegisterBank();
 
-        if (registerBank.getValue(rsa) == 0) {
+        if (registerBank.getValue(rsa) === 0) {
             simulation.setPC(registerBank.getValue(rsb) - 2);
         }
     },
     async executeI(simulation, rst, immediate) {
         let registerBank = simulation.getRegisterBank();
 
-        if (registerBank.getValue(rst) == 0) {
+        if (registerBank.getValue(rst) === 0) {
             simulation.setPC(simulation.getPC() + immediate);
         }
     },
 }
+
+export default bez;

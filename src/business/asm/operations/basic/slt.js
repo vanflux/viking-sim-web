@@ -1,4 +1,4 @@
-export default {
+const slt = {
     getName() {
         return 'slt';
     },
@@ -27,3 +27,5 @@ export default {
         );
     },
 }
+
+export default slt;

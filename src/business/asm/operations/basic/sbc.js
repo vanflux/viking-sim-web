@@ -1,4 +1,4 @@
-export default {
+const sbc = {
     getName() {
         return 'sbc';
     },
@@ -20,3 +20,5 @@ export default {
         );
     },
 }
+
+export default sbc;

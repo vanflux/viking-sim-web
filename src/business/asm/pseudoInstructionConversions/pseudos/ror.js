@@ -4,16 +4,18 @@ import Operand from '../../operand';
 
 const operationRor = operationsManager.getOperationByName('ror');
 
-export default {
+const ror = {
     getOperation: () => operationRor,
     getNonPseudoInstructions: (instruction, architecture) => {
-        if (instruction.getOperation().getName() != operationRor.getName()) return [];
+        if (instruction.getOperation().getName() !== operationRor.getName()) return [];
 
         let operands = instruction.getOperands();
-        if (operands.length != 2) return [];
+        if (operands.length !== 2) return [];
 
         return [
             new Instruction(operationRor, [ operands[0], operands[1], new Operand('r0', Operand.REGISTER) ]),
         ];
     },
 };
+
+export default ror;

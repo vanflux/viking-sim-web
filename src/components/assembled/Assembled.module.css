@@ -1,0 +1,35 @@
+.container {
+  border: 1px solid rgb(58, 58, 58);
+  background-color: #303030;
+  color: rgb(197, 192, 202);
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.editor {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.title {
+  color: rgb(197, 192, 202);
+  background-color: #303030;
+}
+
+.breakpoint {
+  margin-left: 5px;
+  margin-top: 2px;
+  max-width: 15px;
+  max-height: 15px;
+  background-color: red;
+  border-radius: 50%;
+  border: 1px solid black;
+}
+
+
+.currentLineRunning {
+  background: rgba(255, 0, 0, 0.45);
+}

@@ -1,4 +1,4 @@
-export default {
+const sub = {
     getName() {
         return 'sub';
     },
@@ -27,3 +27,5 @@ export default {
         );
     },
 }
+
+export default sub;

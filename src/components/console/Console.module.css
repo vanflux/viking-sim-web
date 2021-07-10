@@ -1,0 +1,55 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+}
+
+.container, .output, .inputBuffer {
+  border: 1px solid rgb(58, 58, 58);
+}
+
+.outAndInBufContainer {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.output {
+  display: flex;
+  flex: 1;
+}
+
+.output>textarea {
+  width: 100%;
+  height: 100%;
+  background-color: #1E1E1E;
+  color: rgb(197, 192, 202);
+  padding: 1px 5px 1px 5px;
+  resize: none;
+  border: none;
+}
+
+.inputBuffer {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputBuffer>textarea {
+  background-color: #1E1E1E;
+  color: rgb(197, 192, 202);
+  padding: 1px 5px 1px 5px;
+  resize: none;
+  border: none;
+}
+
+.title {
+  color: rgb(197, 192, 202);
+  background-color: #303030;
+}
+
+.inputText {
+  background-color: #4d4d4d;
+  color:rgb(197, 192, 202);
+  border: none;
+}

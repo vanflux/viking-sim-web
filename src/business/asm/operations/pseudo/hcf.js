@@ -1,4 +1,4 @@
-export default {
+const hcf = {
     getName() {
         return 'hcf';
     },
@@ -6,3 +6,5 @@ export default {
         return true;
     },
 }
+
+export default hcf;

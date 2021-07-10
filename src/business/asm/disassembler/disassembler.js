@@ -6,7 +6,7 @@ class Disassembler {
     }
 
     disassemble(rawHex) {
-        if (rawHex.length == 0) return [];
+        if (rawHex.length === 0) return [];
 
         let result = [];
         let arrayLiteral = rawHex

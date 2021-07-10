@@ -1,4 +1,4 @@
-export default {
+const and = {
     getName() {
         return 'and';
     },
@@ -27,3 +27,5 @@ export default {
         );
     },
 }
+
+export default and;

@@ -128,6 +128,7 @@ class Instruction {
                 finalCode |= immediate;
                 break;
             }
+            default:
         }
         return finalCode;
     }
@@ -170,6 +171,7 @@ class Instruction {
                 }
                 break;
             }
+            default:
         }
     }
 

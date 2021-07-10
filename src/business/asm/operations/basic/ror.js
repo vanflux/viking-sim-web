@@ -1,4 +1,4 @@
-export default {
+const ror = {
     getName() {
         return 'ror';
     },
@@ -22,3 +22,5 @@ export default {
         simulation.setCarry(value & 1);
     },
 }
+
+export default ror;

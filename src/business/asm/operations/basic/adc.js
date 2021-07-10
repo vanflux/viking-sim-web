@@ -1,4 +1,4 @@
-export default {
+const adc = {
     getName() {
         return 'adc';
     },
@@ -20,3 +20,5 @@ export default {
         );
     },
 }
+
+export default adc;

@@ -1,4 +1,4 @@
-export default {
+const ldb = {
     getName() {
         return 'ldb';
     },
@@ -17,3 +17,5 @@ export default {
         registerBank.setValue(rst, await memory.readByte(registerBank.getUValue(rsb)));
     },
 }
+
+export default ldb;

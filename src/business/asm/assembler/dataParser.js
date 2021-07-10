@@ -32,6 +32,7 @@ export default class DataParser {
                     if (splitted.some(x => !utils.isInteger(x))) throw new Error('Data contains a non-literal');
                     bytes.push( ...splitted.reduce( (a, b) => a.concat(utils.numberToBytes(parseInt(b), byteWidth)), [] ) );
                     break;
+                default:
             }
         }
         return bytes;
@@ -60,9 +61,9 @@ function extractValues(str) {
     for (let i = 0; i < str.length; i++) {
         let c = str[i];
 
-        if ((c == '"' && lastC != '\\')) {            
+        if ((c === '"' && lastC !== '\\')) {            
             if (capturingQuote) {
-                if (startIndex != i) values.push({
+                if (startIndex !== i) values.push({
                     type: 'text',
                     value: unraw(str.substring(startIndex, i)),
                 });
@@ -70,7 +71,7 @@ function extractValues(str) {
                 startIndex = i + 1;
             } else {
                 capturingQuote = true;
-                if (startIndex != i) values.push({
+                if (startIndex !== i) values.push({
                     type: 'others',
                     value: str.substring(startIndex, i),
                 });
@@ -79,7 +80,7 @@ function extractValues(str) {
         }
         lastC = c;
     }
-    if (startIndex != str.length) values.push({
+    if (startIndex !== str.length) values.push({
         type: 'others',
         value: str.substring(startIndex, str.length),
     });

@@ -1,4 +1,4 @@
-export default {
+const ldc = {
     getName() {
         return 'ldc';
     },
@@ -19,3 +19,5 @@ export default {
         );
     },
 }
+
+export default ldc;

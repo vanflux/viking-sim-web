@@ -1,4 +1,4 @@
-export default {
+const pop = {
     getName() {
         return 'pop';
     },
@@ -6,3 +6,5 @@ export default {
         return true;
     },
 }
+
+export default pop;

@@ -1,4 +1,4 @@
-export default {
+const asr = {
     getName() {
         return 'asr';
     },
@@ -21,3 +21,5 @@ export default {
         );
     },
 }
+
+export default asr;

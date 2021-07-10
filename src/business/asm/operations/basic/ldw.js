@@ -1,4 +1,4 @@
-export default {
+const ldw = {
     getName() {
         return 'ldw';
     },
@@ -17,3 +17,5 @@ export default {
         registerBank.setValue(rst, await memory.readWord(registerBank.getUValue(rsb)));
     },
 }
+
+export default ldw;

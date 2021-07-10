@@ -1,6 +1,6 @@
 import styles from './Registers.module.css';
-import { Box } from "@material-ui/core";
-import { Component, useEffect } from "react";
+import { Component } from "react";
+import utils from '../../utils';
 
 class Registers extends Component {
   constructor(props) {
@@ -44,10 +44,10 @@ class Register extends Component {
 
   componentDidMount() {
     let self = this;
-    this.valueUpdateHandler = ({registerName, newValue}) => {
+    this.valueUpdateHandler = utils.callLimiter(({registerName, newValue}) => {
       if (registerName !== self.name) return;
       self.setState({ value: newValue });
-    };
+    }, 50);
     this.registerBank.on('value update', this.valueUpdateHandler);
   }
 

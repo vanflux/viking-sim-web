@@ -4,13 +4,13 @@ import Operand from '../../operand';
 
 const operationHcf = operationsManager.getOperationByName('hcf');
 
-export default {
+const hcf = {
     getOperation: () => operationHcf,
     getNonPseudoInstructions: (instruction, architecture) => {
-        if (instruction.getOperation().getName() != operationHcf.getName()) return [];
+        if (instruction.getOperation().getName() !== operationHcf.getName()) return [];
 
         let operands = instruction.getOperands();
-        if (operands.length != 0) return [];
+        if (operands.length !== 0) return [];
 
         // hcf -> [ ldb r0, r0, r0 ]
         return [
@@ -22,3 +22,5 @@ export default {
         ];
     },
 };
+
+export default hcf;

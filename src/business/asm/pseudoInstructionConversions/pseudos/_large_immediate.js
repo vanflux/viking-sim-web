@@ -6,14 +6,14 @@ let supportedOpNames = new Set([ 'and', 'or', 'xor', 'slt', 'add', 'sub', 'bez',
 
 const operationLdi = operationsManager.getOperationByName('ldi');
 
-export default {
+const _large_immediate = {
     getNonPseudoInstructions: (instruction, architecture) => {
         if (!supportedOpNames.has(instruction.getOperation().getName())) return [];
 
         let operands = instruction.getOperands();
-        if (operands.length != 2) return [];
+        if (operands.length !== 2) return [];
 
-        if (operands[0].getType() == 'register') {
+        if (operands[0].getType() === 'register') {
             switch (operands[1].getType()) {
                 case 'literal':
                     let literal = operands[1].getValue();
@@ -24,9 +24,12 @@ export default {
                         ];
                     }
                     break;
+                default:
             }
         }
 
         return [];
     },
 };
+
+export default _large_immediate;

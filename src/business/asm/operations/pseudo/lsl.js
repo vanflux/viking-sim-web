@@ -1,4 +1,4 @@
-export default {
+const lsl = {
     getName() {
         return 'lsl';
     },
@@ -6,3 +6,5 @@ export default {
         return true;
     },
 }
+
+export default lsl;

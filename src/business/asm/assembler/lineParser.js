@@ -15,7 +15,7 @@ export default class LineParser {
             symbol = match[1];
             rest = match[2];
 
-            if (symbol.length == 0) symbol = null;
+            if (symbol.length === 0) symbol = null;
         } else {
             throw new Error('Cant parse line to symbol and rest');
         }

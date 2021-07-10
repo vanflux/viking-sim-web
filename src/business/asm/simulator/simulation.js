@@ -240,6 +240,10 @@ export default class Simulation extends EventEmitter {
         this.emit('input buffer', this.inputBytes);
     }
 
+    getInput() {
+        return this.inputBytes;
+    }
+
     getRegisterBank() {
         return this.registerBank;
     }
@@ -295,5 +299,9 @@ export default class Simulation extends EventEmitter {
 
     setStepInterval(ms) {
         this.stepInterval = ms;
+    }
+
+    getStepInterval() {
+        return this.stepInterval;
     }
 }

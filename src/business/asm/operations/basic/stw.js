@@ -1,4 +1,4 @@
-export default {
+const stw = {
     getName() {
         return 'stw';
     },
@@ -17,3 +17,5 @@ export default {
         await memory.writeWord(registerBank.getUValue(rsb), registerBank.getUValue(rsa));
     },
 }
+
+export default stw;

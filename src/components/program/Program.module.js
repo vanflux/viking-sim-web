@@ -1,6 +1,7 @@
 import { Box } from '@material-ui/core';
 import Editor from '@monaco-editor/react';
 import { Component } from 'react';
+import operationsManager from '../../business/asm/operations/operationsManager';
 import styles from './Program.module.css'
 
 const defaultProgramData =
@@ -23,10 +24,18 @@ let alreadyCreatedLang = false;
 class Program extends Component {
   constructor(props) {
     super(props);
+
+    if (props.curArchitecture == null) throw new Error('props.curArchitecture null');
+
+    this.opsNames = operationsManager.getOperationNames();
+    this.regNames = props.curArchitecture.getRegisterNames();
+
     this.state = {  }
   }
 
   onEditorWillMount(monaco) {
+    this.monaco = monaco;
+
     if (alreadyCreatedLang) return;
     alreadyCreatedLang = true;
 
@@ -34,8 +43,8 @@ class Program extends Component {
         
     monaco.languages.setMonarchTokensProvider('vikingAsm', {
 
-      //operationKeywords: opsNames,
-      //registerKeywords: regNames,
+      operationKeywords: this.opsNames,
+      registerKeywords: this.regNames,
 
       decimalNumbers: /\d+/,
       hexNumbers: /(?:0x|0B)[\da-fA-F]+/,
@@ -49,8 +58,8 @@ class Program extends Component {
             /\b\w+\b/,
             {
               cases: {
-                //'@operationKeywords': 'operationKeywords',
-                //'@registerKeywords': 'registersKeyWords',
+                '@operationKeywords': 'operationKeywords',
+                '@registerKeywords': 'registersKeyWords',
                 '@default': 'symbols',
               },
             },
@@ -73,14 +82,13 @@ class Program extends Component {
 
     monaco.languages.registerCompletionItemProvider('vikingAsm', {
       provideCompletionItems: () => {
-        /*let suggestions = opsNames.map(opName => ({
+        let suggestions = this.opsNames.map(opName => ({
           label: opName,
           detail: '...',
           documentation: '...',
           kind: monaco.languages.CompletionItemKind.Function,
           insertText: opName,
-        }));*/
-        let suggestions = [];
+        }));
         return { suggestions: suggestions };
       }
     });
@@ -98,7 +106,16 @@ class Program extends Component {
   }
 
   onEditorMount(editor, monaco) {
+    this.editor = editor;
     // Nothing
+  }
+
+  getText() {
+    return this.editor.getValue();
+  }
+
+  setText(text) {
+    this.editor.setValue(text);
   }
 
   render() {

@@ -1,4 +1,4 @@
-export default {
+const or = {
     getName() {
         return 'or';
     },
@@ -27,3 +27,5 @@ export default {
         );
     },
 }
+
+export default or;

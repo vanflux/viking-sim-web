@@ -1,8 +1,6 @@
 import './Simulator.css'
 import { Box } from "@material-ui/core";
-import { Component } from 'react';
-import Editor from "@monaco-editor/react";
-import { DataGrid, GridDensityTypes } from '@material-ui/data-grid';
+import { Component, createRef } from 'react';
 import Registers from '../registers/Registers.module';
 import Memory from '../../business/asm/simulator/memory';
 import architectureManager from '../../business/asm/architectureManager';
@@ -12,19 +10,22 @@ import pseudoManager from '../../business/asm/pseudoInstructionConversions/pseud
 import PseudoConverter from '../../business/asm/pseudoInstructionConversions/pseudoConverter';
 import Assembler from '../../business/asm/assembler/assembler';
 import Disassembler from '../../business/asm/disassembler/disassembler';
+// eslint-disable-next-line
 import asm from '../../business/index';
 import Program from '../program/Program.module';
 import SymbolTable from '../symbolTable/SymbolTable.module';
-
-const GUTTER_GLYPH_MARGIN = 2;
+import Control from '../control/Control.module';
+import Console from '../console/Console.module';
+import Assembled from '../assembled/Assembled.module';
 
 class Simulator extends Component {
 
 	constructor(props) {
 		super(props);
 
-		this.inputAsmEditor = null;
-		this.assembledAsmEditor = null;
+		this.programRef = createRef();
+		this.assembledRef = createRef();
+		this.consoleRef = createRef();
 
 		this.curArchitecture = architectureManager.getViking16Arch();
 		this.memory = Memory.createFromArchitecture(this.curArchitecture);
@@ -37,8 +38,49 @@ class Simulator extends Component {
 		};
 	}
 
-	async assemble(e) {
-		let programData = this.inputAsmEditor.getValue();
+	componentWillMount() {
+		this.simulationOnRunErrorHandler = (error) => {
+			this.consoleRef.current.writeLine('');
+			this.consoleRef.current.writeLine('[Error | Simulation] ' + error.message);
+		};
+		
+		this.simulationOnRunEndedHandler = () => {
+			this.consoleRef.current.writeLine('');
+			this.consoleRef.current.writeLine('[Info | Simulation] run ended.');
+		};
+		
+		this.simulationOnBreakpointHandler = (pc) => {
+			this.consoleRef.current.writeLine('');
+			this.consoleRef.current.writeLine('[Info | Simulation] breakpoint at PC=' + pc.toString(16));
+		};
+		
+		this.simulationWriteCharHandler = (char) => {
+			if (char.charCodeAt(0) !== 0) {
+				this.consoleRef.current.write(char);
+			}
+		};
+		
+		this.simulationWriteIntHandler = (int) => {
+			this.consoleRef.current.write(String(int));
+		};
+
+		this.simulation.on('run error', this.simulationOnRunErrorHandler);
+		this.simulation.on('run ended', this.simulationOnRunEndedHandler);
+		this.simulation.on('breakpoint', this.simulationOnBreakpointHandler);
+		this.simulation.on('console write char', this.simulationWriteCharHandler);
+		this.simulation.on('console write int', this.simulationWriteIntHandler);
+	}
+
+	componentWillUnmount() {
+		this.simulation.off('run error', this.simulationOnRunErrorHandler);
+		this.simulation.off('run ended', this.simulationOnRunEndedHandler);
+		this.simulation.off('breakpoint', this.simulationOnBreakpointHandler);
+		this.simulation.off('console write char', this.simulationWriteCharHandler);
+		this.simulation.off('console write int', this.simulationWriteIntHandler);
+	}
+
+	async assemble() {
+		let programData = this.programRef.current.getText();
 		try {
 			let pseudoInstructions = pseudoManager.getPseudoInstructions();
 			let pseudoConverter = new PseudoConverter(pseudoInstructions);
@@ -57,55 +99,33 @@ class Simulator extends Component {
 			this.simulation.setRawObjCode(assemblerResult.rawObjectCode);
 			await this.simulation.reset();
 
-			console.log(result.disassembly);
-
-			//mainWindow.writeLineOutput('[Info | Assembler] Successfully assembled');
+			this.assembledRef.current.setAssembled(result.disassembly.map(x => x.value).join('\n'));
+			this.consoleRef.current.writeLine('[Info | Assembler] Successfully assembled');
 
 			return result;
 		} catch (exc) {
 				console.error(exc);
-				//mainWindow.writeLineOutput('[Error | Assembler] ' + exc.message);
+				this.consoleRef.current.writeLine('[Error | Assembler] ' + exc.message);
 		}
 	}
 
-	onInputEditorMount(editor, monaco) {
-		this.inputAsmEditor = editor;
-		editor.updateOptions({
-			wordBasedSuggestions: false,
-			automaticLayout: true,
-			tabSize: 8,
-			detectIndentation: false,
-			acceptSuggestionOnCommitCharacter: false,
-			suggestOnTriggerCharacters: false,
-			showFoldingControls: 'always',
-		});
+	onInput(text) {
+		let inputBytes = new Array(text.length + 1);
+		let buffer = Buffer.from(text);
+		for (let i = 0; i < text.length; i++) {
+				inputBytes[i] = buffer[i];
+		}
+		// Add \0 byte on end
+		inputBytes[text.length] = 0;
+		this.simulation.addInput(inputBytes);
 	}
 
-	onAssembledEditorMount(editor, monaco) {
-		this.assembledAsmEditor = editor;
-		let self = this;
-		editor.updateOptions({
-			wordBasedSuggestions: false,
-			automaticLayout: true,
-			lineDecorationsWidth: 0,
-			glyphMargin: true,
-			minimap: {
-					enabled: false,
-			},
-			lineNumbers: (n) => ((n-1)*2).toString(16).padStart(4, '0'),
-			readOnly: true,
-		});
-		
-		editor.onMouseDown(async (e) => {
-			let { target: { type, position: { lineNumber } } } = e;
-			if (type !== GUTTER_GLYPH_MARGIN) return;
-			let pc = (lineNumber - 1) * 2;
-			await self.toggleBreakpoint(pc);
-		});
+	onAssemble() {
+		this.assemble();
 	}
-
-	async toggleBreakpoint(pc) {
-		console.log('toggleBreakpoint at', pc);
+	
+	onControlError(exc) {
+		this.consoleRef.current.writeLine(exc);
 	}
 
 	render() {
@@ -113,66 +133,15 @@ class Simulator extends Component {
 			<div className="simulator">
 				<Box display="flex" flexDirection="column" width="100%" height="100%">
 					<Box display="flex" flexDirection="row" flex="1" overflow="auto">
-						<Program />
-
-						<Box className="assembledAsmArea" display="flex" flexDirection="column" overflow="hidden">
-							<div className='areaTitle'>Disassembly</div>
-							<Editor
-								id="assembledAsmArea"
-								display="flex"
-								flex="1"
-								overflow="hidden"
-
-								language='vikingAsm'
-								theme='vikinAsmTheme'
-
-								onMount={this.onAssembledEditorMount.bind(this)}
-							/>
-						</Box>
-
+						<Program curArchitecture={this.curArchitecture} ref={this.programRef} />
+						<Assembled simulation={this.simulation} ref={this.assembledRef} />
 						<SymbolTable />
-
 						<Box className='rightArea' display="flex" flexDirection="column" justifyContent="space-between" flex="1" overflow="auto">
 							<Registers registerBank={this.registerBank} />
-							
-							<Box className='controlArea' display="flex" flexDirection="column" flex="1" alignItems="center">
-								<div className='d-flex controlLabel'>Control</div>
-		
-								<Box className='cycleArea' display="flex" flexDirection="row">
-									<div className='cycleLabel'>Cycle:</div>
-									<div id='cycle'>0</div>
-								</Box>
-								
-								<button className='controlBtn' id='assembleBtn' onClick={this.assemble.bind(this)}>Assemble</button>
-								<button className='controlBtn' id='resetBtn'>Reset</button>
-								<button className='controlBtn' id='stopBtn'>Stop</button>
-								<button className='controlBtn' id='runBtn'>Run</button>
-								<button className='controlBtn' id='stepBtn'>Step</button>
-								<div className='delayLabel'>Delay (ms):</div>
-								<input
-									className='w-100'
-									id='delayInput'
-									type='number'
-									value={this.state.stepDelay}
-									onChange={(e) => this.setState({stepDelay: parseInt(e.target.value)}) }
-									min="1"
-									max="1000"
-								></input>
-							</Box>
+							<Control simulation={this.simulation} onAssemble={this.onAssemble.bind(this)} onError={this.onControlError.bind(this)} />
 						</Box>
 					</Box>
-					<Box className='bottomArea' display="flex" flexDirection="column">
-						<Box display="flex" flexDirection="row" flex="1">
-							<Box className='outputArea' display="flex" flex="1">
-								<textarea readOnly spellCheck='false' id="outputTextArea"></textarea>
-							</Box>
-							<Box className='inputBufferArea' display="flex" flexDirection="column">
-								<div className='areaTitle'>Input Buffer</div>
-								<textarea readOnly spellCheck='false' id="inputBufferTextArea"></textarea>
-							</Box>
-						</Box>
-						<input placeholder="input..." id='inputText'/>
-					</Box>
+					<Console simulation={this.simulation} onInput={this.onInput.bind(this)} ref={this.consoleRef} />
 				</Box>
 			</div>
 		);

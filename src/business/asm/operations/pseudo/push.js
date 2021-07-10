@@ -1,4 +1,4 @@
-export default {
+const push = {
     getName() {
         return 'push';
     },
@@ -6,3 +6,5 @@ export default {
         return true;
     },
 }
+
+export default push;

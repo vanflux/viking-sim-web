@@ -1,4 +1,4 @@
-export default {
+const lsr = {
     getName() {
         return 'lsr';
     },
@@ -21,3 +21,5 @@ export default {
         );
     },
 }
+
+export default lsr;

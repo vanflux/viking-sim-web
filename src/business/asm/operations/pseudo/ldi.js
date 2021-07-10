@@ -1,4 +1,4 @@
-export default {
+const ldi = {
     getName() {
         return 'ldi';
     },
@@ -6,3 +6,5 @@ export default {
         return true;
     },
 }
+
+export default ldi;

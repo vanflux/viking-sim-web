@@ -1,4 +1,4 @@
-export default {
+const sltu = {
     getName() {
         return 'sltu';
     },
@@ -27,3 +27,5 @@ export default {
         );
     },
 }
+
+export default sltu;
