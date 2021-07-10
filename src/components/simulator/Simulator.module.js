@@ -17,8 +17,8 @@ import SymbolTable from '../symbolTable/SymbolTable.module';
 import Control from '../control/Control.module';
 import Console from '../console/Console.module';
 import Assembled from '../assembled/Assembled.module';
-import App from '../app/App.module';
 import MemoryViewer from '../memoryViewer/MemoryViewer.module';
+import Home from '../home/Home.module';
 
 class Simulator extends Component {
 
@@ -42,7 +42,7 @@ class Simulator extends Component {
 
 	componentDidMount() {
 		// Open Memory Viewer
-		App.instance.spawnWindow("MemViewer", "Memory Viewer", 440, 420, <MemoryViewer memory={this.memory} />);
+		Home.instance.spawnWindow("MemViewer", "Memory Viewer", 440, 420, <MemoryViewer memory={this.memory} />);
 	}
 
 	componentWillMount() {
