@@ -35,6 +35,7 @@ export default class Simulation extends EventEmitter {
         this.memory.reset();
         await this.writeObjCodeMemory();
         this.registerBank.setValue('sp', 0xdffe);
+        this.emit('reset');
     }
 
     setupMemoryHandlers() {

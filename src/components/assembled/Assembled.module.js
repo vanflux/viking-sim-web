@@ -15,6 +15,7 @@ class Assembled extends Component {
     this.onBreakpoint = typeof props.onBreakpoint === 'function' ? props.onBreakpoint : ()=>{};
     
     this.breakpointDecorations = {};
+    this.breakpoints = new Set();
     this.curLineRunningDecorationId = null;
     this.curLineRunningDecoration = null;
     this.monaco = null;
@@ -24,13 +25,22 @@ class Assembled extends Component {
   }
 
   componentWillMount() {
+    this.simulation.setBreakpointHandler((simulation, pc) => {
+      return this.breakpoints.has(pc);
+    });
+
     this.pcUpdateHandler = utils.callLimiter((pc) => {
       this.setLineRunning(pc/2+1);
     }, 20);
+    this.simulationResetHandler = (pc) => {
+      this.removeAllBreakpoints();
+    };
+    this.simulation.on('reset', this.simulationResetHandler);
     this.simulation.on('pc update', this.pcUpdateHandler);
   }
 
   componentWillUnmount() {
+    this.simulation.off('reset', this.simulationResetHandler);
     this.simulation.off('pc update', this.pcUpdateHandler);
   }
 
@@ -59,24 +69,24 @@ class Assembled extends Component {
         },
       },
     ]);
+    this.breakpoints.add(pc);
     this.breakpointDecorations[pc] = bpDec;
     this.onBreakpoint(pc, true);
   }
 
   removeBreakpoint(pc) {
     let bpDec = this.breakpointDecorations[pc];
-    if (!bpDec) return;
-    delete this.breakpointDecorations[pc];
-    this.editor.deltaDecorations(bpDec, []);
+    if (bpDec) {
+      delete this.breakpointDecorations[pc];
+      this.editor.deltaDecorations(bpDec, []);
+    }
+    this.breakpoints.delete(pc);
     this.onBreakpoint(pc, false);
   }
 
   removeAllBreakpoints() {
-    for (let pc in this.breakpointDecorations) {
-      let bpDec = this.breakpointDecorations[pc];
-      delete this.breakpointDecorations[pc];
-      this.editor.deltaDecorations(bpDec, []);
-      this.onBreakpoint(pc, false);
+    for (let pc of this.breakpoints) {
+      this.removeBreakpoint(pc);
     }
   }
 

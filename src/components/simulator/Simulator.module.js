@@ -32,7 +32,6 @@ class Simulator extends Component {
 		this.memory = Memory.createFromArchitecture(this.curArchitecture);
 		this.registerBank = RegisterBank.createFromArchitecture(this.curArchitecture);
 		this.simulation = new Simulation(this.curArchitecture, this.memory, this.registerBank);
-		this.breakpoints = new Set();
 
 		this.state = {
 			stepDelay: 50,
