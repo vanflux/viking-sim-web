@@ -44,10 +44,14 @@ class Register extends Component {
 
   componentDidMount() {
     let self = this;
-    this.valueUpdateHandler = utils.callLimiter(({registerName, newValue}) => {
-      if (registerName !== self.name) return;
+    let changeValue = utils.callLimiter((newValue) => {
       self.setState({ value: newValue });
     }, 50);
+
+    this.valueUpdateHandler = ({registerName, newValue}) => {
+      if (registerName !== self.name) return;
+      changeValue(newValue);
+    };
     this.registerBank.on('value update', this.valueUpdateHandler);
   }
 
@@ -59,7 +63,7 @@ class Register extends Component {
     return (
       <div className={styles.registerContainer}>
         <div>{this.name}{this.aliases.length > 0 ? (' (' + this.aliases.join(',') + ')') : ''}</div>
-        <div>{String(this.state.value).padStart(4, '0')}</div>
+        <div>{this.state.value.toString(16).padStart(4, '0')}</div>
       </div>
     );
   }

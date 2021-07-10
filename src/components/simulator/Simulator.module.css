@@ -1,0 +1,17 @@
+
+
+.container {
+  background-color: #1E1E1E;
+  display: flex;
+  flex: 1;
+}
+
+.rightArea {
+  background-color: #303030;
+  min-width: 160px;
+  max-width: 200px;
+}
+
+* {
+  outline: none;
+}

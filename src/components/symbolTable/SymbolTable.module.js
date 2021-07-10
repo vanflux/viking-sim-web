@@ -22,8 +22,8 @@ class SymbolTable extends Component {
     }
   }
 
-  setSymbols(symbolsList) {
-    let newRows = symbolsList.map((symbol, id) => Object.assign({ id }, symbol));
+  setSymbolTable(symbolTable) {
+    let newRows = Object.entries(symbolTable).map(([symbolName, symbolValue], id) => Object.assign({ id }, {symbolName, symbolValue}));
     this.setState({ rows: newRows });
   }
 

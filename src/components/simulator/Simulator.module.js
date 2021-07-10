@@ -1,4 +1,4 @@
-import './Simulator.css'
+import styles from './Simulator.module.css'
 import { Box } from "@material-ui/core";
 import { Component, createRef } from 'react';
 import Registers from '../registers/Registers.module';
@@ -25,6 +25,7 @@ class Simulator extends Component {
 
 		this.programRef = createRef();
 		this.assembledRef = createRef();
+		this.symbolTableRef = createRef();
 		this.consoleRef = createRef();
 
 		this.curArchitecture = architectureManager.getViking16Arch();
@@ -100,6 +101,7 @@ class Simulator extends Component {
 			await this.simulation.reset();
 
 			this.assembledRef.current.setAssembled(result.disassembly.map(x => x.value).join('\n'));
+			this.symbolTableRef.current.setSymbolTable(symbolTable);
 			this.consoleRef.current.writeLine('[Info | Assembler] Successfully assembled');
 
 			return result;
@@ -130,13 +132,13 @@ class Simulator extends Component {
 
 	render() {
 		return (
-			<div className="simulator">
+			<div className={styles.container}>
 				<Box display="flex" flexDirection="column" width="100%" height="100%">
 					<Box display="flex" flexDirection="row" flex="1" overflow="auto">
 						<Program curArchitecture={this.curArchitecture} ref={this.programRef} />
 						<Assembled simulation={this.simulation} ref={this.assembledRef} />
-						<SymbolTable />
-						<Box className='rightArea' display="flex" flexDirection="column" justifyContent="space-between" flex="1" overflow="auto">
+						<SymbolTable ref={this.symbolTableRef} />
+						<Box className={styles.rightArea} display="flex" flexDirection="column" justifyContent="space-between" flex="1" overflow="auto">
 							<Registers registerBank={this.registerBank} />
 							<Control simulation={this.simulation} onAssemble={this.onAssemble.bind(this)} onError={this.onControlError.bind(this)} />
 						</Box>

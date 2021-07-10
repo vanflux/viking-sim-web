@@ -29,14 +29,14 @@ export default class RegisterBank extends EventEmitter {
         this.registers = {};
         for (let registerName in this.registerInfos) {
             let registerInfo = this.registerInfos[registerName];
-            let { name, aliases } = registerInfo;
+            let { aliases } = registerInfo;
 
             let register = {
-                name,
+                name: registerName,
                 aliases,
                 value: 0,
             };
-
+            
             this.registers[registerName] = register;
             aliases.forEach(aliasName => this.registers[aliasName] = register);
         }
@@ -50,9 +50,10 @@ export default class RegisterBank extends EventEmitter {
 
     setValue(registerName, newValue) {
         newValue = (newValue & this.mask) >>> 0;
-        let oldValue = this.registers[registerName].value;
-        this.registers[registerName].value = newValue;
-        this.emit('value update', { registerName, oldValue, newValue });
+        let register = this.registers[registerName];
+        let oldValue = register.value;
+        register.value = newValue;
+        this.emit('value update', { registerName: register.name, oldValue, newValue });
     }
 
     getValue(registerName) {

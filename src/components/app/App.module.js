@@ -1,5 +1,5 @@
 import styles from './App.module.css'
-import Simulator from "../simulator/Simulator";
+import Simulator from "../simulator/Simulator.module";
 import Window from '../window/Window.module';
 
 function App() {
