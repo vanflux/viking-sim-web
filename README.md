@@ -2,6 +2,8 @@
 
 Simulador da viking CPU utilizando React.js & Monaco-Editor.
 
+Link site: [https://vanflux.github.io/viking-sim-web/](https://vanflux.github.io/viking-sim-web/)
+
 A implementação original foi feita por [sjohann81](https://github.com/sjohann81/) utiliza python2 e pode ser encontrada [AQUI](https://github.com/sjohann81/viking/).
 
 Esta implementação tem o objetivo de fazer algumas melhorias como por exemplo: o editor de código, na implementação original é um editor de texto simples, já nesta, foi utilizado o monaco-editor que possui syntax highlight e outras ferramentas como busca(ctrl+f), desfazer(ctrl+z), refazer(ctrl+y).
