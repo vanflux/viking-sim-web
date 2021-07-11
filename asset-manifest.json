@@ -1,20 +1,23 @@
 {
   "files": {
-    "main.css": "/viking-sim-web/static/css/main.7124a94b.chunk.css",
-    "main.js": "/viking-sim-web/static/js/main.5bea7bbc.chunk.js",
-    "main.js.map": "/viking-sim-web/static/js/main.5bea7bbc.chunk.js.map",
+    "main.css": "/viking-sim-web/static/css/main.aac07ba6.chunk.css",
+    "main.js": "/viking-sim-web/static/js/main.c8fd3131.chunk.js",
+    "main.js.map": "/viking-sim-web/static/js/main.c8fd3131.chunk.js.map",
     "runtime-main.js": "/viking-sim-web/static/js/runtime-main.ecd06abe.js",
     "runtime-main.js.map": "/viking-sim-web/static/js/runtime-main.ecd06abe.js.map",
-    "static/js/2.43f167ca.chunk.js": "/viking-sim-web/static/js/2.43f167ca.chunk.js",
-    "static/js/2.43f167ca.chunk.js.map": "/viking-sim-web/static/js/2.43f167ca.chunk.js.map",
+    "static/js/2.5071535f.chunk.js": "/viking-sim-web/static/js/2.5071535f.chunk.js",
+    "static/js/2.5071535f.chunk.js.map": "/viking-sim-web/static/js/2.5071535f.chunk.js.map",
     "index.html": "/viking-sim-web/index.html",
-    "static/css/main.7124a94b.chunk.css.map": "/viking-sim-web/static/css/main.7124a94b.chunk.css.map",
-    "static/js/2.43f167ca.chunk.js.LICENSE.txt": "/viking-sim-web/static/js/2.43f167ca.chunk.js.LICENSE.txt"
+    "static/css/main.aac07ba6.chunk.css.map": "/viking-sim-web/static/css/main.aac07ba6.chunk.css.map",
+    "static/js/2.5071535f.chunk.js.LICENSE.txt": "/viking-sim-web/static/js/2.5071535f.chunk.js.LICENSE.txt",
+    "static/media/AssembleIcon.317ec53f.svg": "/viking-sim-web/static/media/AssembleIcon.317ec53f.svg",
+    "static/media/ResetIcon.185470da.svg": "/viking-sim-web/static/media/ResetIcon.185470da.svg",
+    "static/media/StepIcon.4e668f1b.svg": "/viking-sim-web/static/media/StepIcon.4e668f1b.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.ecd06abe.js",
-    "static/js/2.43f167ca.chunk.js",
-    "static/css/main.7124a94b.chunk.css",
-    "static/js/main.5bea7bbc.chunk.js"
+    "static/js/2.5071535f.chunk.js",
+    "static/css/main.aac07ba6.chunk.css",
+    "static/js/main.c8fd3131.chunk.js"
   ]
 }
