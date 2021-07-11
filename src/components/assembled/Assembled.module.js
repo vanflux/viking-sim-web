@@ -24,7 +24,7 @@ class Assembled extends Component {
     this.state = {  };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.simulation.setBreakpointHandler((simulation, pc) => {
       return this.breakpoints.has(pc);
     });

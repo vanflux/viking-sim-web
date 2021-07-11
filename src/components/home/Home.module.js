@@ -16,7 +16,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.spawnWindow('Simulator', 'Viking CPU Simulator', 980, 700, <Simulator />)
+    this.spawnWindow('Simulator', 'Viking CPU Simulator', 980, 710, <Simulator />)
   }
 
   closeAbout() {

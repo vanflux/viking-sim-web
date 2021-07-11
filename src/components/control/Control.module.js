@@ -1,6 +1,11 @@
 import { Component } from 'react';
 import utils from '../../utils';
 import styles from './Control.module.css';
+import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+import { ReactComponent as AssembleIcon } from '../../assets/images/AssembleIcon.svg';
+import { ReactComponent as ResetIcon } from '../../assets/images/ResetIcon.svg';
+import { ReactComponent as StepIcon } from '../../assets/images/StepIcon.svg';
 
 class Control extends Component {
   constructor(props) {
@@ -20,7 +25,7 @@ class Control extends Component {
     this.state = {  }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.cyclesUpdateHandler = utils.callLimiter((cycles) => {
       this.setState({});
     }, 50);
@@ -33,7 +38,7 @@ class Control extends Component {
 
   stepIntervalChanged(e) {
     let value = parseInt(e.target.value);
-    if (isNaN(value)) value = 50;
+    if (isNaN(value)) value = 0;
     this.simulation.setStepInterval(value);
     this.setState({});
   }
@@ -87,7 +92,7 @@ class Control extends Component {
 
   render() { 
     return (
-      <div className={styles.container}>
+      <div className={`unselectable ${styles.container}`}>
         <div className={styles.title}>Control</div>
 
         <div className={styles.content}>
@@ -103,11 +108,39 @@ class Control extends Component {
               onChange={this.autoAssembleChanged.bind(this)}
             /><span style={{margin: '0px 0px 0px 5px'}}>Auto-assemble</span>
           </div>
-          <button className={styles.btn} onClick={this.assembleClick.bind(this)}>Assemble</button>
-          <button className={styles.btn} onClick={this.resetClick.bind(this)}>Reset</button>
-          <button className={styles.btn} onClick={this.stopClick.bind(this)}>Pause</button>
-          <button className={styles.btn} onClick={this.runClick.bind(this)}>Run</button>
-          <button className={styles.btn} onClick={this.stepClick.bind(this)}>Step</button>
+
+          <div className={styles.btnList}>
+            <div className={styles.btn} onClick={this.assembleClick.bind(this)}>
+              <div className={styles.btnLaterals}></div>
+              <AssembleIcon className="MuiSvgIcon-root" />
+              <div>Assemble</div>
+              <div className={styles.btnLaterals}></div>
+            </div>
+            <div className={styles.btn} onClick={this.runClick.bind(this)}>
+              <div className={styles.btnLaterals}></div>
+              <PlayCircleFilledIcon />
+              <div>Run</div>
+              <div className={styles.btnLaterals}></div>
+            </div>
+            <div className={styles.btn} onClick={this.stopClick.bind(this)}>
+              <div className={styles.btnLaterals}></div>
+              <PauseCircleFilledIcon />
+              <div>Pause</div>
+              <div className={styles.btnLaterals}></div>
+            </div>
+            <div className={styles.btn} onClick={this.stepClick.bind(this)}>
+              <div className={styles.btnLaterals}></div>
+              <StepIcon className="MuiSvgIcon-root" />
+              <div>Step</div>
+              <div className={styles.btnLaterals}></div>
+            </div>
+            <div className={styles.btn} onClick={this.resetClick.bind(this)}>
+              <div className={styles.btnLaterals}></div>
+              <ResetIcon className="MuiSvgIcon-root" />
+              <div>Reset</div>
+              <div className={styles.btnLaterals}></div>
+            </div>
+          </div>
 
           <div className={styles.delayLabel}>Delay (ms):</div>
           <input className={styles.delayInput} type='number' value={this.simulation.getStepInterval()} onChange={this.stepIntervalChanged.bind(this)} min="0" max="1000" />

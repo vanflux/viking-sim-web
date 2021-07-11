@@ -4,6 +4,8 @@
   background-color: #1E1E1E;
   display: flex;
   flex: 1;
+  width: 100%;
+  overflow: auto;
 }
 
 .rightArea {

@@ -43,11 +43,6 @@ class Simulator extends Component {
 	}
 
 	componentDidMount() {
-		// Open Memory Viewer
-		Home.instance.spawnWindow("MemViewer", "Memory Viewer", 440, 420, <MemoryViewer memory={this.memory} />);
-	}
-
-	componentWillMount() {
 		this.simulationOnRunErrorHandler = (error) => {
 			this.consoleRef.current.writeLine('');
 			this.consoleRef.current.writeLine('[Error | Simulation] ' + error.message);
@@ -78,6 +73,9 @@ class Simulator extends Component {
 		this.simulation.on('breakpoint', this.simulationOnBreakpointHandler);
 		this.simulation.on('console write char', this.simulationWriteCharHandler);
 		this.simulation.on('console write int', this.simulationWriteIntHandler);
+		
+		// Open Memory Viewer
+		Home.instance.spawnWindow("MemViewer", "Memory Viewer", 440, 420, <MemoryViewer memory={this.memory} />);
 	}
 
 	componentWillUnmount() {

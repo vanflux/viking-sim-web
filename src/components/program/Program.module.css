@@ -2,4 +2,5 @@
   background-color: #303030;
   color: rgb(197, 192, 202);
   border: 1px solid rgb(58, 58, 58);
+  min-width: 270px;
 }

@@ -15,7 +15,7 @@
 }
 
 .title, .cycleArea {
-  margin: 5px 0px 5px 0px;
+  margin: 2px 0px 5px 0px;
 }
 
 .cycleArea {
@@ -27,14 +27,31 @@
   margin-right: 4px;
 }
 
+.btnList {
+  display: table;
+  table-layout: auto;
+  border-collapse: separate;
+  border-spacing: 0 2px;
+}
+
 .btn {
-  width: 100%;
+  display: table-row;
   height: 25px;
   background-color: rgb(34, 34, 34);
   color: rgb(197, 192, 202);
   border: none;
-  margin: 1px 10px;
+  margin: 5px 0px;
   transition: color 0.1s;
+  cursor: pointer;
+}
+
+.btn>* {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.btn>svg {
+  margin-right: 5px;
 }
 
 .btn:hover {
@@ -42,8 +59,12 @@
   color: rgb(109, 202, 96);
 }
 
+.btnLaterals {
+  width: 50%;
+}
+
 .delayLabel {
-  padding: 10px 0px 5px 0px;
+  padding: 5px 0px 5px 0px;
 }
 
 .delayInput {
