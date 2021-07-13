@@ -45,24 +45,24 @@ class Control extends Component {
     this.setState({});
   }
 
-  async assembleClick() {
-    await this.onAssemble();
+  assembleClick() {
+    this.onAssemble();
   }
   
-  async resetClick() {
-    await this.onReset();
+  resetClick() {
+    this.onReset();
   }
   
-  async stopClick() {
-    await this.onPause();
+  stopClick() {
+    this.onPause();
   }
   
-  async runClick() {
-    await this.onRun();
+  runClick() {
+    this.onRun();
   }
   
-  async stepClick() {
-    await this.onStep();
+  stepClick() {
+    this.onStep();
   }
 
   getAutoAssemble() {

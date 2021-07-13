@@ -10,11 +10,11 @@ const ldw = {
     },
     supportR: () => true,
     supportI: () => false,
-    async executeR(simulation, rst, rsa, rsb) {
+    executeR(simulation, rst, rsa, rsb) {
         let registerBank = simulation.getRegisterBank();
         let memory = simulation.getMemory();
 
-        registerBank.setValue(rst, await memory.readWord(registerBank.getUValue(rsb)));
+        registerBank.setValue(rst, memory.readWord(registerBank.getUValue(rsb)));
     },
 }
 

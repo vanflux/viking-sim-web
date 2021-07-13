@@ -10,7 +10,7 @@ const ror = {
     },
     supportR: () => true,
     supportI: () => false,
-    async executeR(simulation, rst, rsa, rsb) {
+    executeR(simulation, rst, rsa, rsb) {
         let registerBank = simulation.getRegisterBank();
         let architecture = simulation.getArchitecture();
 

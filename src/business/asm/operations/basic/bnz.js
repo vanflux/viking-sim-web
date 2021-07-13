@@ -10,14 +10,14 @@ const bnz = {
     },
     supportR: () => true,
     supportI: () => true,
-    async executeR(simulation, rst, rsa, rsb) {
+    executeR(simulation, rst, rsa, rsb) {
         let registerBank = simulation.getRegisterBank();
 
         if (registerBank.getValue(rsa) !== 0) {
             simulation.setPC(registerBank.getValue(rsb) - 2);
         }
     },
-    async executeI(simulation, rst, immediate) {
+    executeI(simulation, rst, immediate) {
         let registerBank = simulation.getRegisterBank();
 
         if (registerBank.getValue(rst) !== 0) {

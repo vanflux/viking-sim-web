@@ -29,7 +29,7 @@ export default class DataParser {
                     if (trimmed.length <= 0) break;
 
                     let splitted = trimmed.split(/(?:[?: \t]+)|,/);
-                    if (splitted.some(x => !utils.isInteger(x))) throw new Error('Data contains a non-literal');
+                    if (splitted.some(x => !utils.isInteger(x))) throw new TypeError('Data contains a non-literal');
                     bytes.push( ...splitted.reduce( (a, b) => a.concat(utils.numberToBytes(parseInt(b), byteWidth)), [] ) );
                     break;
                 default:

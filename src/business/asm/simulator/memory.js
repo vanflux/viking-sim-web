@@ -23,27 +23,27 @@ class Memory extends EventEmitter {
         this.storage = storage;
     }
 
-    async reset(...args) {
+    reset(...args) {
         let result = this.storage.reset(...args);
         this.emit('reset');
         return result;
     }
     
-    async getDataLength(...args) {
+    getDataLength(...args) {
         return this.storage.getDataLength(...args);
     }
     
-    async getBytesFromRange(...args) {
+    getBytesFromRange(...args) {
         return this.storage.getBytesFromRange(...args);
     }
     
-    async getWordsFromRange(...args) {
+    getWordsFromRange(...args) {
         return this.storage.getWordsFromRange(...args);
     }
     
-    async readByte(address) {
+    readByte(address) {
         if (this.onReadByte) {
-            let newValue = await this.onReadByte(address);
+            let newValue = this.onReadByte(address);
             if (newValue != null) {
                 return newValue;
             }
@@ -53,9 +53,9 @@ class Memory extends EventEmitter {
         return result;
     }
     
-    async readWord(address) {
+    readWord(address) {
         if (this.onReadWord) {
-            let newValue = await this.onReadWord(address);
+            let newValue = this.onReadWord(address);
             if (newValue != null) {
                 return newValue;
             }
@@ -65,9 +65,9 @@ class Memory extends EventEmitter {
         return result;
     }
 
-    async writeByte(address, byte) {
+    writeByte(address, byte) {
         if (this.onWriteByte) {
-            if (!await this.onWriteByte(address, byte)) {
+            if (!this.onWriteByte(address, byte)) {
                 return false;
             }
         }
@@ -76,9 +76,9 @@ class Memory extends EventEmitter {
         return result;
     }
     
-    async writeWord(address, word) {
+    writeWord(address, word) {
         if (this.onWriteWord) {
-            if(!await this.onWriteWord(address, word)) {
+            if(!this.onWriteWord(address, word)) {
                 return false;
             }
         }

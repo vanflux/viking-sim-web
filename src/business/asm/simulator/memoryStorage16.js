@@ -9,21 +9,21 @@ export default class MemoryStorage16 {
         }
     }
 
-    async readByte(address) {
+    readByte(address) {
         return this.data[address];
     }
 
-    async readWord(address) {
+    readWord(address) {
         let byte0 = this.data[address];
         let byte1 = this.data[address+1];
         return (byte0 << 8) | byte1;
     }
 
-    async writeByte(address, byte) {
+    writeByte(address, byte) {
         this.data[address] = byte & 0xFF;
     }
 
-    async writeWord(address, word) {
+    writeWord(address, word) {
         let byte0 = (word >> 8) & 0xFF;
         let byte1 = word & 0xFF;
         this.data[address] = byte0;

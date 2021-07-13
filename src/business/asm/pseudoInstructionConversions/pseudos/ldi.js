@@ -31,15 +31,10 @@ const ldi = {
 
                         let bytes = utils.numberToBytes(literal, architecture.getByteWidth());
                         if (bytes.length === 0) throw new Error('Convert number to bytes error');
-                        //bytes = utils.removeFirstZeroes(bytes);
-                        if (bytes.length === 0) {
-                            return [ new Instruction(operationLdr, [ operands[0], new Operand(0, Operand.LITERAL) ]) ]
-                        } else {
-                            return [
-                                new Instruction(operationLdr, [ operands[0], new Operand(bytes.shift(), Operand.LITERAL) ]),
-                                ...bytes.map(byte => new Instruction(operationLdc, [ operands[0], new Operand(byte, Operand.LITERAL) ])),
-                            ];
-                        }
+                        return [
+                            new Instruction(operationLdr, [ operands[0], new Operand(bytes.shift(), Operand.LITERAL) ]),
+                            ...bytes.map(byte => new Instruction(operationLdc, [ operands[0], new Operand(byte, Operand.LITERAL) ])),
+                        ];
                     }
                 case 'symbol':
                     // ldi r1, sym -> [ ldc r1, sym+0(1 byte)   ldc r1, sym+1(1 byte) ]

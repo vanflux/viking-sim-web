@@ -26,11 +26,11 @@ class MemoryViewer extends Component {
     this.state = {  }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     
     // Request data count
     let dataCount = null;
-    while(dataCount == null) dataCount = await this.getDataCount();
+    while(dataCount == null) dataCount = this.getDataCount();
     this.rows = dataCount / this.columns / this.dataItemBytes;
 
     // Setup scroll
@@ -38,7 +38,7 @@ class MemoryViewer extends Component {
     this.setScrollHeight(this.scrollHeight);
 
     // Get initial data
-    let data = await this.getData();
+    let data = this.getData();
     this.recreateTable(data);
 
     // scroll logic
@@ -49,7 +49,7 @@ class MemoryViewer extends Component {
     this.memoryScrollRef.current.onscroll = async (e) => {
       this.scrollTop = this.memoryScrollRef.current.scrollTop;
       this.rowOffset = Math.floor((this.rows - this.rowsToShow) * (this.scrollTop / (this.scrollHeight - this.memoryScrollRef.current.getBoundingClientRect().height)));
-      let data = await this.getData();
+      let data = this.getData();
       this.recreateTable(data);
       this.wordHighlightContexts = {};
       e.preventDefault();
@@ -110,7 +110,7 @@ class MemoryViewer extends Component {
       ctx = { value: 1 };
       this.wordHighlightContexts[address] = ctx;
 
-      let id = setInterval(async () => {
+      let id = setInterval(() => {
         if (ctx.value <= 0) {
           elem.style['background-color'] = 'rgba(255,0,0,0)';
           clearInterval(id);
@@ -175,14 +175,14 @@ class MemoryViewer extends Component {
     }
   }
 
-  async getDataCount() {
-    return await this.memory.getDataLength();
+  getDataCount() {
+    return this.memory.getDataLength();
   }
 
-  async getData() {
+  getData() {
     this.dataOffset = this.rowOffset * this.columns * 2;
     this.dataCount = this.columns * this.rowsToShow * 2;
-    let data = await this.memory.getWordsFromRange(this.dataOffset, this.dataOffset + this.dataCount);
+    let data = this.memory.getWordsFromRange(this.dataOffset, this.dataOffset + this.dataCount);
     return data;
   }
 

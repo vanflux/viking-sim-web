@@ -10,7 +10,7 @@ const sltu = {
     },
     supportR: () => true,
     supportI: () => true,
-    async executeR(simulation, rst, rsa, rsb) {
+    executeR(simulation, rst, rsa, rsb) {
         let registerBank = simulation.getRegisterBank();
 
         registerBank.setValue(
@@ -18,7 +18,7 @@ const sltu = {
             registerBank.getUValue(rsa) < registerBank.getUValue(rsb) ? 1 : 0,
         );
     },
-    async executeI(simulation, rst, immediate) {
+    executeI(simulation, rst, immediate) {
         let registerBank = simulation.getRegisterBank();
 
         registerBank.setValue(

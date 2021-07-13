@@ -16,10 +16,10 @@ class Instruction {
             
             let rst = architecture.getRegisterNameByCode(rstCode);
             
-            if (!rst) throw new Error('rst doesnt exist');
+            if (!rst) throw new TypeError('rst doesnt exist');
     
             let operation = operationsManager.getOperationByOpcode(opcode);
-            if (!operation) throw new Error('operation doesnt exist');
+            if (!operation) throw new TypeError('operation doesnt exist');
     
             let operands = [
                 new Operand(rst, Operand.REGISTER),
@@ -36,12 +36,12 @@ class Instruction {
             let rst = architecture.getRegisterNameByCode(rstCode);
             let rsa = architecture.getRegisterNameByCode(rsaCode);
             let rsb = architecture.getRegisterNameByCode(rsbCode);
-            if (!rst) throw new Error('rst doesnt exist');
-            if (!rsa) throw new Error('rsa doesnt exist');
-            if (!rsb) throw new Error('rsb doesnt exist');
+            if (!rst) throw new TypeError('rst doesnt exist');
+            if (!rsa) throw new TypeError('rsa doesnt exist');
+            if (!rsb) throw new TypeError('rsb doesnt exist');
     
             let operation = operationsManager.getOperationByOpcode(opcode);
-            if (!operation) throw new Error('operation doesnt exist');
+            if (!operation) throw new TypeError('operation doesnt exist');
     
             let operands = [
                 new Operand(rst, Operand.REGISTER),
@@ -141,7 +141,7 @@ class Instruction {
         return this.operands;
     }
 
-    async execute(simulation) {
+    execute(simulation) {
         if (!this.operation) throw new Error('Instruction has no operation');
 
         let type = this.getType();
@@ -154,7 +154,7 @@ class Instruction {
                 let rsb = this.operands[2].getValue();
                 
                 if (typeof this.operation.executeR === 'function') {
-                    await this.operation.executeR(simulation, rst, rsa, rsb);
+                    this.operation.executeR(simulation, rst, rsa, rsb);
                 } else {
                     throw new Error('The operation "' + this.operation.getName() + '" doesnt support type R');
                 }
@@ -165,7 +165,7 @@ class Instruction {
                 let immediate = this.operands[1].getValue();
                 
                 if (typeof this.operation.executeI === 'function') {
-                    await this.operation.executeI(simulation, rst, immediate);
+                    this.operation.executeI(simulation, rst, immediate);
                 } else {
                     throw new Error('The operation "' + this.operation.getName() + '" doesnt support type I');
                 }

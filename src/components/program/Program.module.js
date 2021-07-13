@@ -127,21 +127,21 @@ class Program extends Component {
     setTimeout(() => this.infosRef.current.textContent = '', 3000);
   }
 
-  async save() {
+  save() {
     let code = this.editor.getValue();
-    if (await this.onSaveRequest(code) === true) {
+    if (this.onSaveRequest(code) === true) {
       this.setInfos('Saved');
     } else {
       console.error('Save error');
     }
   }
 
-  async loadSaved() {
-    await this.onLoadSavedRequest();
+  loadSaved() {
+    this.onLoadSavedRequest();
   }
 
-  async loadDefault() {
-    await this.onLoadDefaultRequest();
+  loadDefault() {
+    this.onLoadDefaultRequest();
   }
 
   render() {

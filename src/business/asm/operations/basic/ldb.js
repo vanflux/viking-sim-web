@@ -10,11 +10,11 @@ const ldb = {
     },
     supportR: () => true,
     supportI: () => false,
-    async executeR(simulation, rst, rsa, rsb) {
+    executeR(simulation, rst, rsa, rsb) {
         let registerBank = simulation.getRegisterBank();
         let memory = simulation.getMemory();
 
-        registerBank.setValue(rst, await memory.readByte(registerBank.getUValue(rsb)));
+        registerBank.setValue(rst, memory.readByte(registerBank.getUValue(rsb)));
     },
 }
 

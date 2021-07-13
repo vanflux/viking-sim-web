@@ -10,7 +10,7 @@ const and = {
     },
     supportR: () => true,
     supportI: () => true,
-    async executeR(simulation, rst, rsa, rsb) {
+    executeR(simulation, rst, rsa, rsb) {
         let registerBank = simulation.getRegisterBank();
 
         registerBank.setValue(
@@ -18,7 +18,7 @@ const and = {
             registerBank.getUValue(rsa) & registerBank.getUValue(rsb),
         );
     },
-    async executeI(simulation, rst, immediate) {
+    executeI(simulation, rst, immediate) {
         let registerBank = simulation.getRegisterBank();
 
         registerBank.setValue(

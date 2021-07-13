@@ -133,7 +133,7 @@ class Simulator extends Component {
 		this.simulation.off('waiting input', this.simulationWaitingInputHandler);
 	}
 
-	async loadAsmCode() {
+	loadAsmCode() {
 		console.log('Load asm code');
 		let asmCode = localStorage.getItem('asmCode');
 		if (asmCode) {
@@ -154,7 +154,7 @@ class Simulator extends Component {
 		this.simulation.addInput(inputBytes);
 	}
 
-	async assemble() {
+	assemble() {
 		let programData = this.programRef.current.getText();
 		try {
 			let pseudoInstructions = pseudoManager.getPseudoInstructions();
@@ -172,7 +172,7 @@ class Simulator extends Component {
 			let result = { symbolTable, disassembly };
 
 			this.simulation.setRawObjCode(assemblerResult.rawObjectCode);
-			await this.simulation.reset();
+			this.simulation.reset();
 
 			this.assembledRef.current.setAssembled(result.disassembly.map(x => x.value).join('\n'));
 			this.symbolTableRef.current.setSymbolTable(symbolTable);
@@ -190,7 +190,7 @@ class Simulator extends Component {
 		
 		// If simulation is already ended -> reset
 		if (this.simulation.hasEnded()) {
-			await this.simulation.reset();
+			this.simulation.reset();
 			await utils.sleep(100);
 		}
 
@@ -198,7 +198,7 @@ class Simulator extends Component {
 		let curText = this.programRef.current.getText();
 		if (this.controlRef.current.getAutoAssemble()) {
 			if (this.lastText !== curText) {
-				if (!await this.assemble()) {
+				if (!this.assemble()) {
 					return;
 				}
 			}
@@ -206,31 +206,31 @@ class Simulator extends Component {
 		this.lastText = curText;
 		
 		try {
-			await this.simulation.run();
+			this.simulation.run();
 		} catch (exc) {
 			this.consoleRef.current.writeLine(exc);
 		}
 	}
 
-	async pause() {
+	pause() {
 		try {
-			await this.simulation.stop();
+			this.simulation.stop();
 		} catch (exc) {
 			this.consoleRef.current.writeLine(exc);
 		}
 	}
 	
-	async step() {
+	step() {
 		try {
-			await this.simulation.step();
+			this.simulation.step();
 		} catch (exc) {
 			this.consoleRef.current.writeLine(exc);
 		}
 	}
 	
-	async reset() {
+	reset() {
 		try {
-			await this.simulation.reset();
+			this.simulation.reset();
 		} catch (exc) {
 			this.consoleRef.current.writeLine(exc);
 		}
@@ -250,12 +250,12 @@ class Simulator extends Component {
 		}
 	}
 
-	async loadSaved() {
+	loadSaved() {
 		let asmCode = localStorage.getItem('asmCode');
 		this.programRef.current.setText(asmCode);
 	}
 
-	async loadDefault() {
+	loadDefault() {
 		this.programRef.current.setText(defaultProgramData);
 	}
 

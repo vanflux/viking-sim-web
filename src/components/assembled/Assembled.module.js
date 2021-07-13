@@ -122,11 +122,11 @@ class Assembled extends Component {
 			readOnly: true,
 		});
 		
-		this.editor.onMouseDown(async (e) => {
+		this.editor.onMouseDown((e) => {
 			let { target: { type, position: { lineNumber } } } = e;
 			if (type !== GUTTER_GLYPH_MARGIN) return;
 			let pc = (lineNumber - 1) * 2;
-			await self.toggleBreakpoint(pc);
+			self.toggleBreakpoint(pc);
 		});
 	}
 

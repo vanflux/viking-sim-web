@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import utils from '../../../utils';
+import { SimulationError, SimulationNeedInputError } from '../asmErrors';
 import Instruction from '../instruction';
 
 const endSimulationCode = 0x0003;
@@ -27,8 +28,8 @@ export default class Simulation extends EventEmitter {
         this.setupMemoryHandlers();
     }
 
-    async reset() {
-        if (this.running && !this.stopping) await this.stop();
+    reset() {
+        if (this.running && !this.stopping) this.stop();
         this.ended = false;
         this.carry = 0;
         this.setPC(0);
@@ -37,35 +38,33 @@ export default class Simulation extends EventEmitter {
         this.registerBank.reset();
         this.registerBank.setValue('sp', 0xdffe);
         this.memory.reset();
-        await this.writeObjCodeMemory();
+        this.writeObjCodeMemory();
         this.emit('reset');
     }
 
     setupMemoryHandlers() {
-        this.memory.onReadWord = async (address) => {
+        this.memory.onReadWord = (address) => {
             if (address < 0xe000) return; // ok
 
             switch (address) {
                 case 0xf004:
-                    this.setWaitingInput(true);
-                    while(!this.stopping && this.inputBytes.length < 1) await utils.sleep(50);
-                    this.setWaitingInput(false);
-                    if (this.stopping) throw new Error('User stopped simulation without give input');
+                    if (this.inputBytes.length < 1) {
+                        this.setWaitingInput(true);
+                        throw new SimulationNeedInputError('Input too short, need 1 byte');
+                    }
                     return this.readInputChar();
                 case 0xf006:
-                    this.setWaitingInput(true);
-                    while(!this.stopping && this.inputBytes.length < 2) await utils.sleep(50);
-                    this.setWaitingInput(false);
-                    if (this.stopping) throw new Error('User stopped simulation without give input');
+                    if (this.inputBytes.length < 2) {
+                        this.setWaitingInput(true);
+                        throw new SimulationNeedInputError('Input too short, need 2 bytes');
+                    }
                     return this.readInputInt();
                 default:
-                    // read on unauthorized location
-                    this.emit('run error', new Error('read on unauthorized location [' + address.toString(16) + ']'));
-                    await this.stop();
+                    throw new SimulationError('read on unauthorized location [' + address.toString(16) + ']');
             }
         };
         
-        this.memory.onWriteWord = async (address, value) => {
+        this.memory.onWriteWord = (address, value) => {
             if (address < 0xe000) return true; // ok
 
             switch (address) {
@@ -77,21 +76,21 @@ export default class Simulation extends EventEmitter {
                     return true;
                 default:
                     // write on unauthorized location
-                    this.emit('run error', new Error('write on unauthorized location [' + address.toString(16) + '] = ' + value.toString(16)));
-                    await this.stop();
+                    this.emit('run error', new SimulationError('write on unauthorized location [' + address.toString(16) + '] = ' + value.toString(16)));
+                    this.stop();
                     return false;
             }
         };
     }
 
     readInputChar() {
-        if (this.inputBytes.length === 0) throw new Error('Empty input');
+        if (this.inputBytes.length === 0) throw new SimulationNeedInputError('Empty input');
         let byte = this.getNextInputByte();
         return byte;
     }
     
     readInputInt() {
-        if (this.inputBytes.length === 0) throw new Error('Empty input');
+        if (this.inputBytes.length === 0) throw new SimulationNeedInputError('Empty input');
         let zeroCharCode = '0'.charCodeAt(0);
         let nineCharCode = '9'.charCodeAt(0);
         let minusCharCode = '-'.charCodeAt(0);
@@ -150,51 +149,88 @@ export default class Simulation extends EventEmitter {
     }
 
     setRawObjCode(rawObjCode) {
-        if (rawObjCode.length > 0xf000 * 2) throw new Error('Object code too big for the memory');
+        if (rawObjCode.length > 0xf000 * 2) throw new SimulationError('Object code too big for the memory');
         this.rawObjCode = rawObjCode;
     }
 
-    async writeObjCodeMemory() {
+    writeObjCodeMemory() {
         if (!this.rawObjCode) return;
         let wordArray = this.rawObjCode
             .match(/.{1,4}/g)
             .map(x => parseInt(x, 16));
         for (let i = 0; i < wordArray.length; i++) {
             let word = wordArray[i];
-            await this.memory.writeWord(i*2, word);
+            this.memory.writeWord(i*2, word);
         }
 
         this.codeExecutionMaxPC = wordArray.length * 2;
     }
 
-    async step() {
-        if (this.pc >= this.codeExecutionMaxPC) throw new Error('PC run out of program bounds');
+    step() {
+        if (this.pc >= this.codeExecutionMaxPC) throw new SimulationError('PC run out of program bounds');
 
-        let code = await this.memory.readWord(this.pc);
+        let code;
+
+        try {
+            code = this.memory.readWord(this.pc);
+        } catch (exc) {
+            console.error(exc);
+            this.emit('run error', exc);
+            return this.stop();
+        }
+        
         if (code === endSimulationCode) {
             this.ended = true;
             this.emit('run ended');
-            return await this.stop();
+            return this.stop();
         }
 
-        let instruction = Instruction.disassemble(code, this.architecture);
-        await instruction.execute(this);
+        try {
+            let instruction = Instruction.disassemble(code, this.architecture);
+            instruction.execute(this);
+        } catch (exc) {
+            if (exc.name === 'SimulationNeedInputError') {
+                return this.stop();
+            }
+            console.error(exc);
+            this.emit('run error', exc);
+            return this.stop();
+        }
 
         this.incrementPC(2);
         this.incrementCycles(1);
         
         if (this.breakpointHandler(this, this.pc)) {
             this.emit('breakpoint', this.pc);
-            await this.stop();
+            this.stop();
         }
     }
 
     async runner() {
         this.emit('run started');
         try {
+            let timePerBlock = 50;
+            let toExecFloat = 0;
+            runLoop:
             while(!this.stopping) {
-                await this.step();
-                if (this.stepInterval > 0) await utils.sleep(this.stepInterval);
+                if (this.stepInterval > 0) {
+                    toExecFloat += timePerBlock / this.stepInterval;
+                    if (toExecFloat >= 1) {
+                        let toExec = Math.floor(toExecFloat);
+                        toExecFloat -= toExec;
+                        let start = Date.now();
+                        for (let i = 0; i < toExec; i++) {
+                            if (this.stopping) break runLoop;
+                            this.step();
+                        }
+                        let sleepTime = timePerBlock - (Date.now() - start);
+                        if (sleepTime > 0) await utils.sleep(sleepTime);
+                    } else {
+                        await utils.sleep(timePerBlock);
+                    }
+                } else {
+                    this.step();
+                }
             }
         } catch (error) {
             console.error(error);
@@ -204,16 +240,15 @@ export default class Simulation extends EventEmitter {
         this.stopping = false;
     }
 
-    async stop() {
+    stop() {
         if (!this.running) throw new Error('Simulation already stopped');
         if (this.stopping) throw new Error('Simulation already stopping');
         this.stopping = true;
-        while(this.waitingInput) await utils.sleep(50);
         clearTimeout(this.runId);
         this.runId = null;
     }
 
-    async run() {
+    run() {
         if (this.running) throw new Error('Simulation already running');
         if (this.stopping) throw new Error('Simulation stopping');
         this.running = true;
@@ -246,12 +281,17 @@ export default class Simulation extends EventEmitter {
     resetInput() {
         this.inputBytes.length = 0;
         this.emit('input buffer', this.inputBytes);
+        this.setWaitingInput(false);
     }
 
     addInput(inputBytes) {
         for (let byte of inputBytes) 
             this.inputBytes.push(byte & 0xFF);
         this.emit('input buffer', this.inputBytes);
+        if (this.isWaitingInput()) {
+            this.setWaitingInput(false);
+            this.run();
+        }
     }
 
     getInput() {

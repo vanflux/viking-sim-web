@@ -41,10 +41,10 @@ export default class InstructionParser {
     // parse operation
     parseOperation(str) {
         let match = str.match(/^(\w*)[\t ]*/);
-        if (!Array.isArray(match) || match.length < 2) throw new Error('Cant parse to operation');
+        if (!Array.isArray(match) || match.length < 2) throw new TypeError('Cant parse to operation');
 
         let operationName = match[1];
-        if (!this.isOperationName(operationName)) throw new Error('"' + operationName + '" isnt operation');
+        if (!this.isOperationName(operationName)) throw new TypeError('"' + operationName + '" isnt operation');
         
         let operation = operationsManager.getOperationByName(operationName);
         if (!operation) throw new Error('Operation with name "' + operationName + '" not found');

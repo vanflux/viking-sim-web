@@ -10,7 +10,7 @@ const ldc = {
     },
     supportR: () => false,
     supportI: () => true,
-    async executeI(simulation, rst, immediate) {
+    executeI(simulation, rst, immediate) {
         let registerBank = simulation.getRegisterBank();
 
         registerBank.setValue(
