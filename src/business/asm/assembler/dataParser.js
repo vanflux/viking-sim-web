@@ -1,5 +1,5 @@
-import utils from '../../utils';
 import { unraw } from 'unraw';
+import utils from '../../../utils';
 
 export default class DataParser {
     constructor(architecture) {

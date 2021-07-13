@@ -29,6 +29,15 @@
   border: none;
 }
 
+/* https://stackoverflow.com/questions/51764992/blink-border-3-times-1-second-per-loop-in-css */
+.alertsOutline {
+  outline: 5px #ff0000 solid;
+  animation: blink 1s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes blink { 50% { outline-color:transparent; }  }
+
 .inputBuffer {
   width: 200px;
   display: flex;

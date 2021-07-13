@@ -1,21 +1,15 @@
 import { Component } from "react";
 import Editor from "@monaco-editor/react";
 import styles from './Assembled.module.css';
-import utils from "../../utils";
 
 const GUTTER_GLYPH_MARGIN = 2;
 
 class Assembled extends Component {
   constructor(props) {
     super(props);
-
-    if (props.simulation == null) throw new Error('props.simulation null');
-    
-    this.simulation = props.simulation;
-    this.onBreakpoint = typeof props.onBreakpoint === 'function' ? props.onBreakpoint : ()=>{};
     
     this.breakpointDecorations = {};
-    this.breakpoints = new Set();
+    this.pcBreakpoints = new Set();
     this.curLineRunningDecorationId = null;
     this.curLineRunningDecoration = null;
     this.monaco = null;
@@ -24,44 +18,28 @@ class Assembled extends Component {
     this.state = {  };
   }
 
-  componentDidMount() {
-    this.simulation.setBreakpointHandler((simulation, pc) => {
-      return this.breakpoints.has(pc);
-    });
-
-    this.pcUpdateHandler = utils.callLimiter((pc) => {
-      this.setLineRunning(pc/2+1);
-    }, 20);
-    this.simulationResetHandler = (pc) => {
-      this.removeAllBreakpoints();
-    };
-    this.simulation.on('reset', this.simulationResetHandler);
-    this.simulation.on('pc update', this.pcUpdateHandler);
+  hasBreakpoint(pc) {
+    return this.pcBreakpoints.has(pc);
   }
 
-  componentWillUnmount() {
-    this.simulation.off('reset', this.simulationResetHandler);
-    this.simulation.off('pc update', this.pcUpdateHandler);
-  }
-
-  async setBreakpoints(breakpointList) {
-    this.removeAllBreakpoints();
-    for (let pc of breakpointList) {
+  toggleBreakpoint(pc) {
+    if (this.pcBreakpoints.has(pc)) {
+      this.removeBreakpoint(pc);
+    } else {
       this.setBreakpoint(pc);
     }
   }
   
   setBreakpoint(pc) {
     if (this.editor == null) return;
+    if (this.pcBreakpoints.has(pc)) return;
 
     let lineNumber = pc / 2 + 1;    
     let lineCount = this.editor.getModel().getLineCount();
     if (lineNumber <= 0 || lineNumber > lineCount) return;
 
-    let bpDec = this.breakpointDecorations[pc];
-    if (bpDec) return;
-    
-    bpDec = this.editor.deltaDecorations([], [
+    this.pcBreakpoints.add(pc);
+    let bpDec = this.editor.deltaDecorations([], [
       {
         range: new this.monaco.Range(lineNumber, 1, lineNumber, 1),
         options: {
@@ -70,46 +48,43 @@ class Assembled extends Component {
         },
       },
     ]);
-    this.breakpoints.add(pc);
     this.breakpointDecorations[pc] = bpDec;
-    this.onBreakpoint(pc, true);
   }
 
   removeBreakpoint(pc) {
     if (this.editor == null) return;
+    if (!this.pcBreakpoints.has(pc)) return;
 
+    this.pcBreakpoints.delete(pc);
     let bpDec = this.breakpointDecorations[pc];
-    if (bpDec) {
-      delete this.breakpointDecorations[pc];
-      this.editor.deltaDecorations(bpDec, []);
-    }
-    this.breakpoints.delete(pc);
-    this.onBreakpoint(pc, false);
+    delete this.breakpointDecorations[pc];
+    this.editor.deltaDecorations(bpDec, []);
   }
 
   removeAllBreakpoints() {
-    for (let pc of this.breakpoints) {
-      this.removeBreakpoint(pc);
-    }
+    for (let pc of this.pcBreakpoints) this.removeBreakpoint(pc);
   }
 
-  toggleBreakpoint(pc) {
-    let bpDec = this.breakpointDecorations[pc];
-    if (bpDec) {
-      this.removeBreakpoint(pc);
-    } else {
-      this.setBreakpoint(pc);
-    }
+  setBreakpoints(pcs) {
+    this.removeAllBreakpoints();
+    for (let pc of pcs) this.setBreakpoint(pc);
   }
 
   setAssembled(text) {
     if (this.editor == null) return;
+    if (typeof text !== 'string') throw new Error('Text isnt string');
+    
+    let linesCount = text.split('\n').length;
+    let newBreakpointPCs = Array.from(this.pcBreakpoints).filter(pc => pc / 2 < linesCount);
     this.editor.setValue(text);
+    this.setBreakpoints(newBreakpointPCs);
+    this.setCurrentPC(0);
   }
 
-  setLineRunning(lineNumber) {
+  setCurrentPC(pc) {
     if (this.editor == null) return;
     
+    let lineNumber = pc / 2 + 1;
     let lineCount = this.editor.getModel().getLineCount();
     if (lineNumber <= 0 || lineNumber > lineCount) {
       this.curLineRunningDecoration = [];

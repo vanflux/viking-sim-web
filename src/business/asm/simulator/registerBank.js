@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import utils from '../../utils';
+import utils from '../../../utils';
 
 export default class RegisterBank extends EventEmitter {
 

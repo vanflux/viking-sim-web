@@ -1,6 +1,6 @@
 import operationsManager from './operations/operationsManager';
 import Operand from './operand';
-import utils from '../utils';
+import utils from '../../utils';
 
 class Instruction {
     static TYPE_R = 'R';

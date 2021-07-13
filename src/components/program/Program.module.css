@@ -1,6 +1,46 @@
-.program {
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
   background-color: #303030;
   color: rgb(197, 192, 202);
   border: 1px solid rgb(58, 58, 58);
   min-width: 270px;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  word-wrap: none;
+  white-space: nowrap;
+}
+
+.infos {
+  text-align: center;
+  color: rgb(109, 202, 96);
+  animation: blink-green 1s linear infinite;
+}
+
+.btn {
+  margin: 0px 5px 0px 0px;
+  border: 1px solid rgb(77, 77, 77);
+  color: rgb(197, 192, 202);
+  background-color: rgb(34, 34, 34);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.editor {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+@keyframes blink-green {
+  0%  { color: transparent; }
+  40%   { color: rgb(109, 202, 96); }
+  60%   { color: rgb(109, 202, 96); }
+  100%  { color: transparent; }
 }

@@ -7,28 +7,29 @@ class Registers extends Component {
     super(props);
 
     if (!props.registerBank) throw new Error('props.registerBank null');
-    if (!props.simulation) throw new Error('props.simulation null');
 
     this.registerBank = props.registerBank;
-    this.simulation = props.simulation;
 
     this.registerInfos = Object.entries(this.registerBank.getRegisterInfos());
     
-    this.state = { };
+    this.state = {
+      pc: 0,
+    };
   }
 
   componentDidMount() {
-    let self = this;
     this.valueUpdateHandler = utils.callLimiter(() => {
-      self.setState({});
+      this.setState({});
     }, 50);
     this.registerBank.on('value update', this.valueUpdateHandler);
-    this.simulation.on('pc update', this.valueUpdateHandler);
   }
 
   componentWillUnmount() {
     this.registerBank.off('value update', this.valueUpdateHandler);
-    this.simulation.off('pc update', this.valueUpdateHandler);
+  }
+
+  setPC(pc) {
+    this.setState({pc});
   }
 
   render() {
@@ -42,7 +43,7 @@ class Registers extends Component {
           </div>
           
           <div className={styles.pcRegister}>
-            <Register name="pc" aliases={[]} value={this.simulation.getPC()} />
+            <Register name="pc" aliases={[]} value={this.state.pc} />
           </div>
         </div>
       </div>

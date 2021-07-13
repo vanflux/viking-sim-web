@@ -1,23 +1,7 @@
-import { Box } from '@material-ui/core';
 import Editor from '@monaco-editor/react';
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 import operationsManager from '../../business/asm/operations/operationsManager';
 import styles from './Program.module.css'
-
-const defaultProgramData =
-`main
-    ldw	sr,writec
-    ldi	r4,str
-    ldi	r3,loop
-loop
-    ldb	r2,r4
-    stw	r2,sr
-    add	r4,1
-    bnz	r2,r3
-    hcf
-
-writec	0xf000
-str	"hello world!"`;
 
 let alreadyCreatedLang = false;
 
@@ -27,7 +11,12 @@ class Program extends Component {
 
     if (props.curArchitecture == null) throw new Error('props.curArchitecture null');
 
+    this.infosRef = createRef();
+
     this.onChange = typeof props.onChange === 'function' ? props.onChange : ()=>{};
+    this.onLoadSavedRequest = typeof props.onLoadSavedRequest === 'function' ? props.onLoadSavedRequest : ()=>{};
+    this.onLoadDefaultRequest = typeof props.onLoadDefaultRequest === 'function' ? props.onLoadDefaultRequest : ()=>{};
+    this.onSaveRequest = typeof props.onSaveRequest === 'function' ? props.onSaveRequest : ()=>{};
 
     this.opsNames = operationsManager.getOperationNames();
     this.regNames = props.curArchitecture.getRegisterNames();
@@ -112,6 +101,12 @@ class Program extends Component {
     
     this.editor.getModel().onDidChangeContent(this.onChange);
     this.onChange();
+    
+    if (this.initText) {
+      this.editor.setValue(this.initText);
+    }
+
+    this.saveBindHandler = this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, this.save.bind(this));
   }
 
   getText() {
@@ -120,34 +115,55 @@ class Program extends Component {
   }
 
   setText(text) {
+    this.initText = text;
     if (this.editor == null) return;
-    this.editor.setValue(text);
+    let fullRange = this.editor.getModel().getFullModelRange();
+    this.editor.executeEdits(null, [{ text: '', range: fullRange }]);
+    this.editor.executeEdits(null, [{ text, range: fullRange }]);
+  }
+
+  setInfos(infos) {
+    this.infosRef.current.textContent = infos;
+    setTimeout(() => this.infosRef.current.textContent = '', 3000);
+  }
+
+  async save() {
+    let code = this.editor.getValue();
+    if (await this.onSaveRequest(code) === true) {
+      this.setInfos('Saved');
+    } else {
+      console.error('Save error');
+    }
+  }
+
+  async loadSaved() {
+    await this.onLoadSavedRequest();
+  }
+
+  async loadDefault() {
+    await this.onLoadDefaultRequest();
   }
 
   render() {
     return (
-      <Box
-        className={styles.program} 
-        display="flex" 
-        flexDirection="column" 
-        flex="1" 
-        overflow="hidden"
-      >
-        <div className='areaTitle'>Program</div>
+      <div className={styles.container}>
+        <div className={styles.titleContainer}>
+          <div>Program</div>
+          <div className={styles.infos} ref={this.infosRef}></div>
+          <div>
+            <button className={styles.btn} onClick={this.save.bind(this)}>Save</button>
+            <button className={styles.btn} onClick={this.loadSaved.bind(this)}>Load</button>
+            <button className={styles.btn} onClick={this.loadDefault.bind(this)}>Load Example</button>
+          </div>
+        </div>
         <Editor
-          className={styles.program}
-          display="flex"
-          flex="1"
-          overflow="hidden"
-          
+          className={styles.editor}          
           language='vikingAsm'
           theme='vikinAsmTheme'
-          value={defaultProgramData}
-
           beforeMount={this.onEditorWillMount.bind(this)}
           onMount={this.onEditorMount.bind(this)}
         />
-      </Box>
+      </div>
     );
   }
 }

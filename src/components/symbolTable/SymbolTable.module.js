@@ -1,6 +1,6 @@
 import { DataGrid, GridDensityTypes } from '@material-ui/data-grid';
 import { Component } from 'react';
-import utils from '../../business/utils';
+import utils from '../../utils';
 import styles from './SymbolTable.module.css'
 
 class SymbolTable extends Component {

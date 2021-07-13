@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
+import utils from '../../../utils';
 import Instruction from '../instruction';
-import utils from '../../utils';
 
 const endSimulationCode = 0x0003;
 const defaultBreakpointHandler = (simulation, pc) => false;
@@ -47,15 +47,15 @@ export default class Simulation extends EventEmitter {
 
             switch (address) {
                 case 0xf004:
-                    this.waitingInput = true;
+                    this.setWaitingInput(true);
                     while(!this.stopping && this.inputBytes.length < 1) await utils.sleep(50);
-                    this.waitingInput = false;
+                    this.setWaitingInput(false);
                     if (this.stopping) throw new Error('User stopped simulation without give input');
                     return this.readInputChar();
                 case 0xf006:
-                    this.waitingInput = true;
+                    this.setWaitingInput(true);
                     while(!this.stopping && this.inputBytes.length < 2) await utils.sleep(50);
-                    this.waitingInput = false;
+                    this.setWaitingInput(false);
                     if (this.stopping) throw new Error('User stopped simulation without give input');
                     return this.readInputInt();
                 default:
@@ -204,18 +204,6 @@ export default class Simulation extends EventEmitter {
         this.stopping = false;
     }
 
-    isRunning() {
-        return this.running;
-    }
-
-    isStopping() {
-        return this.stopping;
-    }
-
-    hasEnded() {
-        return this.ended;
-    }
-
     async stop() {
         if (!this.running) throw new Error('Simulation already stopped');
         if (this.stopping) throw new Error('Simulation already stopping');
@@ -231,6 +219,22 @@ export default class Simulation extends EventEmitter {
         this.running = true;
         this.stopping = false;
         this.runId = setTimeout(this.runner.bind(this));
+    }
+
+    isWaitingInput() {
+        return this.waitingInput;
+    }
+
+    isRunning() {
+        return this.running;
+    }
+
+    isStopping() {
+        return this.stopping;
+    }
+
+    hasEnded() {
+        return this.ended;
     }
 
     getNextInputByte() {
@@ -264,6 +268,11 @@ export default class Simulation extends EventEmitter {
 
     getCarry() {
         return this.carry;
+    }
+
+    setWaitingInput(waitingInput) {
+        this.waitingInput = waitingInput;
+        this.emit('waiting input', this.waitingInput);
     }
 
     setCarry(carry) {

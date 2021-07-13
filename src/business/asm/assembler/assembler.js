@@ -3,7 +3,7 @@ import InstructionParser from './instructionParser';
 import DataParser from './dataParser';
 import CommentParser from './commentParser';
 import LineParser from './lineParser';
-import utils from '../../utils';
+import utils from '../../../utils';
 
 class Assembler {
     constructor(architecture, programData, pseudoConverter) {

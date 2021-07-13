@@ -1,7 +1,7 @@
 import operationsManager from '../../operations/operationsManager';
 import Instruction from '../../instruction';
 import Operand from '../../operand';
-import  utils from '../../../utils';
+import utils from '../../../../utils';
 const operation = operationsManager.getOperationByName('ldi');
 
 const operationLdr = operationsManager.getOperationByName('ldr');

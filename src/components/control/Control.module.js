@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import utils from '../../utils';
 import styles from './Control.module.css';
 import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
@@ -11,35 +10,38 @@ class Control extends Component {
   constructor(props) {
     super(props);
 
-    if (!props.simulation) throw new Error('props.simulation null');
-
-    this.simulation = props.simulation;
-
     this.onAutoAssembleChanged = typeof props.onAutoAssembleChanged === 'function' ? props.onAutoAssembleChanged : ()=>{};
+    this.onStepIntervalChanged = typeof props.onStepIntervalChanged === 'function' ? props.onStepIntervalChanged : ()=>{};
     this.onAssemble = typeof props.onAssemble === 'function' ? props.onAssemble : ()=>{};
-    this.onBeforeRun = typeof props.onBeforeRun === 'function' ? props.onBeforeRun : ()=>{};
-    this.onError = typeof props.onError === 'function' ? props.onError : ()=>{};
+    this.onRun = typeof props.onRun === 'function' ? props.onRun : ()=>{};
+    this.onPause = typeof props.onPause === 'function' ? props.onPause : ()=>{};
+    this.onStep = typeof props.onStep === 'function' ? props.onStep : ()=>{};
+    this.onReset = typeof props.onReset === 'function' ? props.onReset : ()=>{};
 
+    this.cycles = 0;
+    this.stepInterval = 50;
     this.autoAssemble = true;
 
     this.state = {  }
   }
 
-  componentDidMount() {
-    this.cyclesUpdateHandler = utils.callLimiter((cycles) => {
-      this.setState({});
-    }, 50);
-    this.simulation.on('cycles update', this.cyclesUpdateHandler);
-  }
-
-  componentWillUnmount() {
-    this.simulation.off('cycles update', this.cyclesUpdateHandler);
+  setCycles(cycles) {
+    this.cycles = cycles;
+    this.setState({});
   }
 
   stepIntervalChanged(e) {
     let value = parseInt(e.target.value);
     if (isNaN(value)) value = 0;
-    this.simulation.setStepInterval(value);
+    if (value > 1000) value = 1000;
+    this.stepInterval = value;
+    this.onStepIntervalChanged(this.stepInterval);
+    this.setState({});
+  }
+
+  autoAssembleChanged(e) {
+    this.autoAssemble = e.target.checked;
+    this.onAutoAssembleChanged(this.autoAssemble);
     this.setState({});
   }
 
@@ -48,42 +50,19 @@ class Control extends Component {
   }
   
   async resetClick() {
-    try {
-      await this.simulation.reset();
-    } catch (exc) {
-      this.onError(exc);
-    }
+    await this.onReset();
   }
   
   async stopClick() {
-    try {
-      await this.simulation.stop();
-    } catch (exc) {
-      this.onError(exc);
-    }
+    await this.onPause();
   }
   
   async runClick() {
-    try {
-      if (await this.onBeforeRun() === false) return;
-      await this.simulation.run();
-    } catch (exc) {
-      this.onError(exc);
-    }
+    await this.onRun();
   }
   
   async stepClick() {
-    try {
-      await this.simulation.step();
-    } catch (exc) {
-      this.onError(exc);
-    }
-  }
-
-  autoAssembleChanged(e) {
-    this.autoAssemble = e.target.checked;
-    this.onAutoAssembleChanged(this.autoAssemble);
-    this.setState({});
+    await this.onStep();
   }
 
   getAutoAssemble() {
@@ -98,7 +77,7 @@ class Control extends Component {
         <div className={styles.content}>
           <div className={styles.cycleArea}>
             <div className={styles.cycleLabel}>Cycle:</div>
-            <div>{this.simulation.getCycles()}</div>
+            <div>{this.cycles}</div>
           </div>
           
           <div>
@@ -143,7 +122,14 @@ class Control extends Component {
           </div>
 
           <div className={styles.delayLabel}>Delay (ms):</div>
-          <input className={styles.delayInput} type='number' value={this.simulation.getStepInterval()} onChange={this.stepIntervalChanged.bind(this)} min="0" max="1000" />
+          <input
+            className={styles.delayInput}
+            type='number'
+            value={this.stepInterval}
+            onChange={this.stepIntervalChanged.bind(this)}
+            onKeyUp={this.stepIntervalChanged.bind(this)}
+            min="0"
+            max="1000" />
         </div>
       </div>
     );
