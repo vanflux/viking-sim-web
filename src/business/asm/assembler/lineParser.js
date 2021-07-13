@@ -12,10 +12,14 @@ export default class LineParser {
 
         let match = str.match(/^(\w*)[\t ]*(.*)/);
         if (Array.isArray(match) && match.length >= 3) {
-            symbol = match[1];
-            rest = match[2];
-
-            if (symbol.length === 0) symbol = null;
+            if (this.instructionParser.isOperationName(match[1])) {
+                symbol = null;
+                rest = match[1] + ' ' + match[2];
+            } else {
+                symbol = match[1];
+                rest = match[2];
+                if (symbol.length === 0) symbol = null;
+            }
         } else {
             throw new Error('Cant parse line to symbol and rest');
         }
