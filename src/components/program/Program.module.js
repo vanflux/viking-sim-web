@@ -127,6 +127,23 @@ class Program extends Component {
     setTimeout(() => this.infosRef.current.textContent = '', 3000);
   }
 
+  highlightLine(lineNumber) {
+    let lineCount = this.editor.getModel().getLineCount();
+    if (lineNumber <= 0 || lineNumber > lineCount) return;
+    let lineDec = [
+      {
+        range: new this.monaco.Range(lineNumber, 1, lineNumber, 1),
+        options: {
+          isWholeLine: true,
+          className: styles.curLineHighlight,
+        }
+      }
+    ];
+    this.editor.revealLine(lineNumber);
+    let decId = this.editor.deltaDecorations([], lineDec);
+    setTimeout(() => this.editor.deltaDecorations(decId, []), 500);
+  }
+
   save() {
     let code = this.editor.getValue();
     if (this.onSaveRequest(code) === true) {

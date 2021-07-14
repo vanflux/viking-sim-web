@@ -23,6 +23,10 @@
   animation: blink-green 1s linear infinite;
 }
 
+.curLineHighlight {
+  background: rgba(238, 255, 0, 0.45);
+}
+
 .btn {
   margin: 0px 5px 0px 0px;
   border: 1px solid rgb(77, 77, 77);

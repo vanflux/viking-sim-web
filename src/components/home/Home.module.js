@@ -10,9 +10,9 @@ class Home extends Component {
     this.keyIndex = 0;
     this.windowsContainerRef = createRef();
     this.aboutRef = createRef();
-    this.state = { };
-
-    this.windows = [];
+    this.state = {
+      windows: [],
+    };
   }
 
   componentDidMount() {
@@ -23,17 +23,16 @@ class Home extends Component {
     this.aboutRef.current.remove();
   }
 
-  spawnWindow(name, description, width, height, comp) {
-    let window = <Window key={this.keyIndex++} name={name} description={description} width={width + 'px'} height={height + 'px'}>{comp}</Window>;
-    this.windows.push(window);
-    this.setState({});
+  spawnWindow(name, description, width, height, elem) {
+    let window = <Window key={this.keyIndex++} name={name} description={description} width={width + 'px'} height={height + 'px'}>{elem}</Window>;
+    this.setState({windows: this.state.windows.concat([window])});
   }
 
   render() {
     return (
       <div className={styles.container}>
         <div className={styles.windowsContainer} ref={this.windowsContainerRef}>
-          { this.windows }
+          { this.state.windows }
         </div>
         <div className={styles.aboutContainer} ref={this.aboutRef}>
           <div>Developed by <a href="https://github.com/vanflux">vanflux</a></div>

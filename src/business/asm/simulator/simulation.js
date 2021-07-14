@@ -14,7 +14,6 @@ export default class Simulation extends EventEmitter {
         this.memory = memory;
         this.registerBank = registerBank;
         this.codeExecutionMaxPC = 0;
-        this.runId = null;
         this.running = false;
         this.ended = false;
         this.stopping = false;
@@ -244,8 +243,6 @@ export default class Simulation extends EventEmitter {
         if (!this.running) throw new Error('Simulation already stopped');
         if (this.stopping) throw new Error('Simulation already stopping');
         this.stopping = true;
-        clearTimeout(this.runId);
-        this.runId = null;
     }
 
     run() {
@@ -253,7 +250,7 @@ export default class Simulation extends EventEmitter {
         if (this.stopping) throw new Error('Simulation stopping');
         this.running = true;
         this.stopping = false;
-        this.runId = setTimeout(this.runner.bind(this));
+        setTimeout(this.runner.bind(this));
     }
 
     isWaitingInput() {

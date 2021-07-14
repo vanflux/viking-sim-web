@@ -17,6 +17,7 @@ class Assembler {
         this.symbolTable = {};
         this.objectCodeArray = [];
         this.instructions = [];
+        this.additionalInfos = [];
     }
 
     assemble() {
@@ -29,6 +30,7 @@ class Assembler {
             objectCodeArray: this.objectCodeArray,
             symbolTable: this.symbolTable,
             instructions: this.instructions,
+            additionalInfos: this.additionalInfos,
         };
     }
 
@@ -44,6 +46,8 @@ class Assembler {
 
         for (let i = 0; i < this.lines.length; i++) {
             let line = this.lines[i];
+            let additionalInfo = { lineIndex: i, lineNumber: i+1, line, pc };
+            this.additionalInfos.push(additionalInfo);
 
             let parsed;
             try {
@@ -53,6 +57,7 @@ class Assembler {
                 throw new Error('Cant parse line ' + (i+1) + ' "' + line.trim() + '": ' + exc.message);
             }
             let { isComment, symbol, instruction, data } = parsed;
+            additionalInfo.parsed = parsed;
 
             if (isComment) continue;
 

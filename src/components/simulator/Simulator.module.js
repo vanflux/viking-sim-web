@@ -162,6 +162,7 @@ class Simulator extends Component {
 
 			let assembler = new Assembler(this.curArchitecture, programData, pseudoConverter);
 			let assemblerResult = assembler.assemble();
+			this.curAssembleResult = assemblerResult;
 
 			let disassembler = new Disassembler(this.curArchitecture);
 			let disassemblerResult = disassembler.disassemble(assemblerResult.rawObjectCode);
@@ -202,8 +203,8 @@ class Simulator extends Component {
 					return;
 				}
 			}
+			this.lastText = curText;
 		}
-		this.lastText = curText;
 		
 		try {
 			this.simulation.run();
@@ -240,6 +241,18 @@ class Simulator extends Component {
 		this.simulation.setStepInterval(stepInterval);
 	}
 
+	onSymbolNameClick(symbol) {
+		if (this.curAssembleResult == null) return;
+		let additionInfo = this.curAssembleResult.additionalInfos.find(x => x && x.parsed && x.parsed.symbol === symbol.symbolName);
+		if (additionInfo == null) return;
+		let { lineNumber } = additionInfo;
+		this.programRef.current.highlightLine(lineNumber);
+	}
+	
+	onSymbolValueClick(symbol) {
+		this.assembledRef.current.setCurrentPC(symbol.symbolValue);
+	}
+
 	save(code) {
 		try {
 			localStorage.setItem('asmCode', code);
@@ -271,7 +284,11 @@ class Simulator extends Component {
 							onLoadDefaultRequest={this.loadDefault.bind(this)}
 							ref={this.programRef} />
 						<Assembled ref={this.assembledRef} />
-						<SymbolTable architecture={this.curArchitecture} ref={this.symbolTableRef} />
+						<SymbolTable
+							architecture={this.curArchitecture}
+							onSymbolNameClick={this.onSymbolNameClick.bind(this)}
+							onSymbolValueClick={this.onSymbolValueClick.bind(this)}
+							ref={this.symbolTableRef} />
 						<Box className={styles.rightArea} display="flex" flexDirection="column" justifyContent="space-between" flex="1" overflow="auto">
 							<Registers registerBank={this.registerBank} ref={this.registersRef} />
 							<Control

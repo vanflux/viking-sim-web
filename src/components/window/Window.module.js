@@ -11,7 +11,9 @@ class Window extends Component {
     this.description = props.description || "This is a window!";
     this.props = props;
 
-    this.state = {  }
+    this.state = {
+      children: props.children,
+    };
   }
 
   componentDidMount() {
@@ -22,11 +24,11 @@ class Window extends Component {
   render() { 
     return (
       <div className={styles.container} ref={this.containerRef}>
-        <div className={styles.header}>
+        <div className={`unselectable ${styles.header}`}>
           <div className={styles.title}>{this.name}</div>-<div className={styles.description}>{this.description}</div>
         </div>
         <div className={styles.content}>
-          {this.props.children}
+          {this.state.children}
         </div>
       </div>
     );
