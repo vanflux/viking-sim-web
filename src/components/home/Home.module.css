@@ -17,7 +17,7 @@
 }
 
 .windowsContainer > * {
-  margin: 20px;
+  margin: 10px;
 }
 
 .aboutContainer {
@@ -30,7 +30,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: #00000070
 }
 
 .aboutContainer a:link, a:visited, a:active {

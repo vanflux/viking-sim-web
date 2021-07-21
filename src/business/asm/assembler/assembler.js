@@ -10,6 +10,7 @@ class Assembler {
         this.architecture = architecture;
         this.programData = programData;
         this.pseudoConverter = pseudoConverter;
+        this.extraSymbolTable = {};
         
         this.lines = this.programData.split('\n');
         
@@ -34,6 +35,10 @@ class Assembler {
         };
     }
 
+    addExtraSymbolTable(symbolTable) {
+        Object.assign(this.extraSymbolTable, symbolTable);
+    }
+
     // Process instructions, pseudo-instructions, symbols.
     // Doesnt substitute symbols in instructions.
     pass1() {
@@ -56,10 +61,8 @@ class Assembler {
                 console.error(exc);
                 throw new Error('Cant parse line ' + (i+1) + ' "' + line.trim() + '": ' + exc.message);
             }
-            let { isComment, symbol, instruction, data } = parsed;
+            let { symbol, instruction, data } = parsed;
             additionalInfo.parsed = parsed;
-
-            if (isComment) continue;
 
             if (symbol) {
                 this.symbolTable[symbol] = pc;
@@ -95,6 +98,7 @@ class Assembler {
             for (let operand of operands) {
                 if (operand.getType() === Operand.SYMBOL) {
                     let symbolValue = this.symbolTable[operand.getValue()];
+                    if (symbolValue == null) symbolValue = this.extraSymbolTable[operand.getValue()];
                     if (symbolValue == null) throw new Error('The symbol "' + operand.getValue() + '" doesnt exist');
                     let finalValue = 0;
                     for (let i = operand.getByteRange().min; i <= operand.getByteRange().max; i++) {

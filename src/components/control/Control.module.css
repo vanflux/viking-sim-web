@@ -1,9 +1,8 @@
 .container {
-  background-color: #303030;
   color: rgb(197, 192, 202);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   flex: 1;
 }
 
@@ -11,7 +10,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 95%;
+  margin: 0px 5px 5px 5px;
+}
+
+.title {
+  color: rgb(197, 192, 202);
+  background-color: #ffffff15;
 }
 
 .title, .cycleArea {
@@ -37,7 +41,7 @@
 .btn {
   display: table-row;
   height: 25px;
-  background-color: rgb(34, 34, 34);
+  background-color: #ffffff0c;
   color: rgb(197, 192, 202);
   border: none;
   margin: 5px 0px;
@@ -55,7 +59,7 @@
 }
 
 .btn:hover {
-  background-color: rgb(22, 22, 22);
+  background-color: #00000070;
   color: rgb(109, 202, 96);
 }
 

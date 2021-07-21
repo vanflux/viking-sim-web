@@ -3,10 +3,7 @@
   flex-direction: column;
   flex: 1;
   overflow: hidden;
-  background-color: #303030;
   color: rgb(197, 192, 202);
-  border: 1px solid rgb(58, 58, 58);
-  min-width: 270px;
 }
 
 .titleContainer {
@@ -15,6 +12,7 @@
   justify-content: space-between;
   word-wrap: none;
   white-space: nowrap;
+  background-color: #ffffff15;
 }
 
 .infos {
@@ -29,11 +27,16 @@
 
 .btn {
   margin: 0px 5px 0px 0px;
-  border: 1px solid rgb(77, 77, 77);
+  border: 1px solid #3a3a3a;
   color: rgb(197, 192, 202);
-  background-color: rgb(34, 34, 34);
+  background-color: #00000070;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.btn:hover {
+  color: rgb(109, 202, 96);
+  cursor: pointer;
 }
 
 .editor {

@@ -1,13 +1,19 @@
 export default class CommentParser {
     parse(str) {
         let result = {
-            isComment: false,
+            hasComment: false,
             comment: null,
+            rest: null,
         };
-        let matches = str.match(/^[ \t]*;|(?:\/\/)(.*)/);
-        if (Array.isArray(matches) && matches.length === 2) {
-            result.isComment = true;
-            result.comment = matches[1];
+        let index = str
+            .replace(/".+"/g, '') // Ignore strings content
+            .indexOf('//');
+        if (index >= 0) {
+            result.hasComment = true;
+            result.comment = str.substring(index+2);
+            result.rest = str.substring(0, index);
+        } else {
+            result.rest = str;
         }
         return result;
     }

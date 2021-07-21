@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  color: rgb(197, 192, 202);
+}
+
+.titleContainer {
+  background-color: #ffffff15;
+}
+
+.new {
+  margin-left: 5px;
+  color: red;
+  display: inline;
+  font-size: 0.8rem;
+  animation: blink-red 1s linear infinite;
+}
+
+@keyframes blink-red {
+  0%  { color: transparent; }
+  20%   { color: rgb(255, 0, 0); }
+  80%   { color: rgb(255, 0, 0); }
+  100%  { color: transparent; }
+}
+
+.canvasContainer {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.canvas {
+  width: auto;
+  height: 90%;
+  margin: auto;
+  background-color: white;
+  border: rgb(197, 192, 202) 1px solid;
+
+  /* No Antialiasing */
+
+  /* IE, only works on <img> tags */
+  -ms-interpolation-mode: nearest-neighbor;
+  /* Firefox */
+  image-rendering: crisp-edges;
+  /* Chromium + Safari */
+  image-rendering: pixelated;
+}

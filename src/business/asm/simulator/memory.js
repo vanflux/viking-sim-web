@@ -4,6 +4,7 @@ import MemoryStorage16 from './memoryStorage16';
 class Memory extends EventEmitter {
     static createFromArchitecture (architecture, ...args) {
         let bitWidth = architecture.getBitWidth();
+        let memoryRegions = architecture.getMemoryRegions();
         let storage;
         switch (bitWidth) {
             case 16:
@@ -15,12 +16,17 @@ class Memory extends EventEmitter {
             default:
                 throw new Error('Memory for this architecture doesnt exists (implementation doesnt exists)');
         }
-        return new Memory(storage);
+        return new Memory(storage, memoryRegions);
     }
 
-    constructor(storage) {
+    constructor(storage, memoryRegions) {
         super();
         this.storage = storage;
+        this.memoryRegions = memoryRegions;
+    }
+
+    getMemoryRegions() {
+        return this.memoryRegions;
     }
 
     reset(...args) {

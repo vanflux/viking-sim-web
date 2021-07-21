@@ -1,5 +1,4 @@
 import styles from './Simulator.module.css'
-import { Box } from "@material-ui/core";
 import { Component, createRef } from 'react';
 import Registers from '../registers/Registers.module';
 import Memory from '../../business/asm/simulator/memory';
@@ -18,22 +17,22 @@ import Control from '../control/Control.module';
 import Console from '../console/Console.module';
 import Assembled from '../assembled/Assembled.module';
 import MemoryViewer from '../memoryViewer/MemoryViewer.module';
-import Home from '../home/Home.module';
 import utils from '../../utils';
+import ConsoleDevice from '../../business/asm/simulator/io/devices/consoleDevice';
+import CanvasDevice from '../../business/asm/simulator/io/devices/canvasDevice';
+import CanvasViewer from '../canvasViewer/CanvasViewer.module';
+import Home from '../home/Home.module';
 
 const defaultProgramData =
 `main
-    ldw	sr,writec
-    ldi	r4,str
-    ldi	r3,loop
+	ldi	r4, str
 loop
-    ldb	r2,r4
-    stw	r2,sr
-    add	r4,1
-    bnz	r2,r3
-    hcf
+	ldb	r2, r4
+	stw	r2, 0xf000 // Write char IO
+	add	r4, 1
+	bnz	r2, loop
+	hcf
 
-writec	0xf000
 str	"hello world!"`;
 
 class Simulator extends Component {
@@ -52,54 +51,41 @@ class Simulator extends Component {
 		this.memory = Memory.createFromArchitecture(this.curArchitecture);
 		this.registerBank = RegisterBank.createFromArchitecture(this.curArchitecture);
 		this.simulation = new Simulation(this.curArchitecture, this.memory, this.registerBank);
+		
+		this.consoleDevice = new ConsoleDevice();
+		this.canvasDevice = new CanvasDevice();
+		this.simulation.registerPorts(this.consoleDevice.getPorts());
+		this.simulation.registerPorts(this.canvasDevice.getPorts());
 
-		this.state = {
-			stepDelay: 50,
-		};
+		this.state = { };
 	}
 
 	componentDidMount() {
 		this.simulationOnRunErrorHandler = (error) => {
-			this.consoleRef.current.writeLine('');
-			this.consoleRef.current.writeLine('[Error | Simulation] ' + error.message);
+			this.consoleRef.current.writeLine('[Error | Simulation] ' + error.message, 2);
 		};
 		
 		this.simulationOnRunEndedHandler = () => {
-			this.consoleRef.current.writeLine('');
-			this.consoleRef.current.writeLine('[Info | Simulation] run ended.');
+			this.consoleRef.current.writeLine('[Info | Simulation] run ended.', 1);
 		};
 		
 		this.simulationOnBreakpointHandler = (pc) => {
-			this.consoleRef.current.writeLine('');
-			this.consoleRef.current.writeLine('[Info | Simulation] breakpoint at PC=' + pc.toString(16));
-		};
-		
-		this.simulationWriteCharHandler = (char) => {
-			if (char.charCodeAt(0) !== 0) {
-				this.consoleRef.current.write(char);
-			}
-		};
-		
-		this.simulationWriteIntHandler = (int) => {
-			this.consoleRef.current.write(String(int));
+			this.consoleRef.current.writeLine('[Info | Simulation] breakpoint at PC=' + pc.toString(16), 1);
 		};
 		
     this.simulationPcUpdateHandler = utils.callLimiter((pc) => {
       this.assembledRef.current.setCurrentPC(pc);
 			this.registersRef.current.setPC(pc);
     }, 20);
-
-		this.simulationInBufHandler = (inputBuffer) => {
-			this.consoleRef.current.setInputBuffer(inputBuffer);
-		};
 		
     this.simulationCyclesUpdateHandler = utils.callLimiter((cycles) => {
       this.controlRef.current.setCycles(cycles);
     }, 50);
-
-		this.simulationWaitingInputHandler = (waitingInput) => {
-			this.consoleRef.current.setInputAlert(waitingInput);
-		};
+		
+    this.simulationResetHandler = () => {
+      this.consoleDevice.reset();
+			this.canvasDevice.reset();
+    };
 		
     this.simulation.setBreakpointHandler((_, pc) => {
       return this.assembledRef.current.hasBreakpoint(pc);
@@ -108,29 +94,22 @@ class Simulator extends Component {
 		this.simulation.on('run error', this.simulationOnRunErrorHandler);
 		this.simulation.on('run ended', this.simulationOnRunEndedHandler);
 		this.simulation.on('breakpoint', this.simulationOnBreakpointHandler);
-		this.simulation.on('console write char', this.simulationWriteCharHandler);
-		this.simulation.on('console write int', this.simulationWriteIntHandler);
     this.simulation.on('pc update', this.simulationPcUpdateHandler);
-		this.simulation.on('input buffer', this.simulationInBufHandler);
     this.simulation.on('cycles update', this.simulationCyclesUpdateHandler);
-		this.simulation.on('waiting input', this.simulationWaitingInputHandler);
+    this.simulation.on('reset', this.simulationResetHandler);
 
 		this.loadAsmCode();
-		
-		// Open Memory Viewer
-		Home.instance.spawnWindow("MemViewer", "Memory Viewer", 440, 420, <MemoryViewer memory={this.memory} />);
+
+		Home.instance.spawnWindow('MemView', 'Memory Viewer', 410, 450, <MemoryViewer memory={this.memory} />);
 	}
 
 	componentWillUnmount() {
 		this.simulation.off('run error', this.simulationOnRunErrorHandler);
 		this.simulation.off('run ended', this.simulationOnRunEndedHandler);
 		this.simulation.off('breakpoint', this.simulationOnBreakpointHandler);
-		this.simulation.off('console write char', this.simulationWriteCharHandler);
-		this.simulation.off('console write int', this.simulationWriteIntHandler);
     this.simulation.off('pc update', this.simulationPcUpdateHandler);
-		this.simulation.off('input buffer', this.simulationInBufHandler);
     this.simulation.off('cycles update', this.simulationCyclesUpdateHandler);
-		this.simulation.off('waiting input', this.simulationWaitingInputHandler);
+    this.simulation.off('reset', this.simulationResetHandler);
 	}
 
 	loadAsmCode() {
@@ -143,24 +122,16 @@ class Simulator extends Component {
 		}
 	}
 
-	onInput(text) {
-		let inputBytes = new Array(text.length + 1);
-		let buffer = Buffer.from(text);
-		for (let i = 0; i < text.length; i++) {
-				inputBytes[i] = buffer[i];
-		}
-		// Add \0 byte on end
-		inputBytes[text.length] = 0;
-		this.simulation.addInput(inputBytes);
-	}
-
 	assemble() {
 		let programData = this.programRef.current.getText();
 		try {
+			let ioPortSymbolTable = this.simulation.getPortsSymbolTable();
+
 			let pseudoInstructions = pseudoManager.getPseudoInstructions();
 			let pseudoConverter = new PseudoConverter(pseudoInstructions);
 
 			let assembler = new Assembler(this.curArchitecture, programData, pseudoConverter);
+			assembler.addExtraSymbolTable(ioPortSymbolTable);
 			let assemblerResult = assembler.assemble();
 			this.curAssembleResult = assemblerResult;
 
@@ -177,12 +148,12 @@ class Simulator extends Component {
 
 			this.assembledRef.current.setAssembled(result.disassembly.map(x => x.value).join('\n'));
 			this.symbolTableRef.current.setSymbolTable(symbolTable);
-			this.consoleRef.current.writeLine('[Info | Assembler] Successfully assembled');
+			this.consoleRef.current.writeLine('[Info | Assembler] Successfully assembled', 1);
 
 			return result;
 		} catch (exc) {
 			console.error(exc);
-			this.consoleRef.current.writeLine('[Error | Assembler] ' + exc.message);
+			this.consoleRef.current.writeLine('[Error | Assembler] ' + exc.message, 2);
 		}
 	}
 	
@@ -209,7 +180,7 @@ class Simulator extends Component {
 		try {
 			this.simulation.run();
 		} catch (exc) {
-			this.consoleRef.current.writeLine(exc);
+			this.consoleRef.current.writeLine('[Error | Simulation] ' + exc.message, 2);
 		}
 	}
 
@@ -217,7 +188,7 @@ class Simulator extends Component {
 		try {
 			this.simulation.stop();
 		} catch (exc) {
-			this.consoleRef.current.writeLine(exc);
+			this.consoleRef.current.writeLine('[Error | Simulation] ' + exc.message, 2);
 		}
 	}
 	
@@ -225,7 +196,7 @@ class Simulator extends Component {
 		try {
 			this.simulation.step();
 		} catch (exc) {
-			this.consoleRef.current.writeLine(exc);
+			this.consoleRef.current.writeLine('[Error | Simulation] ' + exc.message, 2);
 		}
 	}
 	
@@ -233,7 +204,7 @@ class Simulator extends Component {
 		try {
 			this.simulation.reset();
 		} catch (exc) {
-			this.consoleRef.current.writeLine(exc);
+			this.consoleRef.current.writeLine('[Error | Simulation] ' + exc.message, 2);
 		}
 	}
 
@@ -273,36 +244,59 @@ class Simulator extends Component {
 	}
 
 	render() {
+		const components = {
+			sym: (
+				<SymbolTable
+					architecture={this.curArchitecture}
+					onSymbolNameClick={this.onSymbolNameClick.bind(this)}
+					onSymbolValueClick={this.onSymbolValueClick.bind(this)}
+					ref={this.symbolTableRef} />
+			),
+			prog: (
+				<Program
+					curArchitecture={this.curArchitecture}
+					portsSymbols={this.simulation.getPortsSymbolsList()}
+					onSaveRequest={this.save.bind(this)}
+					onLoadSavedRequest={this.loadSaved.bind(this)}
+					onLoadDefaultRequest={this.loadDefault.bind(this)}
+					ref={this.programRef} />
+			),
+			asm: (
+				<Assembled ref={this.assembledRef} />
+			),
+			reg: (
+				<Registers registerBank={this.registerBank} ref={this.registersRef} />
+			),
+			ctr: (
+				<Control
+					onAssemble={this.assemble.bind(this)}
+					onRun={this.run.bind(this)}
+					onPause={this.pause.bind(this)}
+					onStep={this.step.bind(this)}
+					onReset={this.reset.bind(this)}
+					onStepIntervalChanged={this.onStepIntervalChanged.bind(this)}
+					ref={this.controlRef} />
+			),
+			con: (
+				<Console consoleDevice={this.consoleDevice} ref={this.consoleRef} />
+			),
+			can: (
+				<CanvasViewer canvasDevice={this.canvasDevice} />
+			),
+		};
+
 		return (
 			<div className={styles.container}>
-				<Box display="flex" flexDirection="column" width="100%" height="100%">
-					<Box display="flex" flexDirection="row" flex="1" overflow="auto">
-						<Program
-							curArchitecture={this.curArchitecture}
-							onSaveRequest={this.save.bind(this)}
-							onLoadSavedRequest={this.loadSaved.bind(this)}
-							onLoadDefaultRequest={this.loadDefault.bind(this)}
-							ref={this.programRef} />
-						<Assembled ref={this.assembledRef} />
-						<SymbolTable
-							architecture={this.curArchitecture}
-							onSymbolNameClick={this.onSymbolNameClick.bind(this)}
-							onSymbolValueClick={this.onSymbolValueClick.bind(this)}
-							ref={this.symbolTableRef} />
-						<Box className={styles.rightArea} display="flex" flexDirection="column" justifyContent="space-between" flex="1" overflow="auto">
-							<Registers registerBank={this.registerBank} ref={this.registersRef} />
-							<Control
-								onAssemble={this.assemble.bind(this)}
-								onRun={this.run.bind(this)}
-								onPause={this.pause.bind(this)}
-								onStep={this.step.bind(this)}
-								onReset={this.reset.bind(this)}
-								onStepIntervalChanged={this.onStepIntervalChanged.bind(this)}
-								ref={this.controlRef} />
-						</Box>
-					</Box>
-					<Console onInput={this.onInput.bind(this)} ref={this.consoleRef} />
-				</Box>
+				<div className={styles.top}>
+					<div className={styles.programContainer}>{components.prog}</div>
+					<div className={styles.assembledContainer}>{components.asm}</div>
+					<div className={styles.symbolTableContainer}>{components.sym}</div>
+					<div className={styles.registersControlArea}>{components.reg}{components.ctr}</div>
+				</div>
+				<div className={styles.bottom}>
+					<div className={styles.consoleContainer}>{components.con}</div>
+					<div className={styles.canvasContainer}>{components.can}</div>
+				</div>
 			</div>
 		);
 	}

@@ -1,9 +1,7 @@
 .container {
-  border: 1px solid rgb(58, 58, 58);
-  background-color: #303030;
   color: rgb(197, 192, 202);
-  width: 200px;
   display: flex;
+  flex: 1;
   flex-direction: column;
   overflow: hidden;
 }
@@ -16,7 +14,7 @@
 
 .title {
   color: rgb(197, 192, 202);
-  background-color: #303030;
+  background-color: #ffffff15;
 }
 
 .breakpoint {

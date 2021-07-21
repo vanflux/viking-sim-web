@@ -1,7 +1,8 @@
 export default class Architecture {
-    constructor({ bitWidth, registers }) {
+    constructor({ bitWidth, registers, memoryRegions }) {
         this.bitWidth = bitWidth;
         this.byteWidth = bitWidth / 8;
+        this.memoryRegions = memoryRegions;
         this.mask = Math.pow(2, bitWidth) - 1;
 
         this.registers = registers;
@@ -64,5 +65,9 @@ export default class Architecture {
     getRegisterCode(name) {
         if (!this.hasRegisterName(name)) throw new Error('Register doesnt exists');
         return this.registersByName[name].code;
+    }
+
+    getMemoryRegions() {
+        return this.memoryRegions;
     }
 }

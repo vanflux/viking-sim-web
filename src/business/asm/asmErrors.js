@@ -11,10 +11,3 @@ export class SimulationError extends AsmError {
     this.name = "SimulationError";
   }
 }
-
-export class SimulationNeedInputError extends SimulationError {
-  constructor(message) {
-    super(message);
-    this.name = "SimulationNeedInputError";
-  }
-}

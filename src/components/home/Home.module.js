@@ -2,7 +2,6 @@ import styles from './Home.module.css'
 import Simulator from "../simulator/Simulator.module";
 import Window from '../window/Window.module';
 import React, { Component, createRef } from 'react';
-
 class Home extends Component {  
   constructor(props) {
     super(props);
@@ -10,13 +9,12 @@ class Home extends Component {
     this.keyIndex = 0;
     this.windowsContainerRef = createRef();
     this.aboutRef = createRef();
-    this.state = {
-      windows: [],
-    };
+    this.windowObjs = [];
+    this.state = { };
   }
 
   componentDidMount() {
-    this.spawnWindow('Simulator', 'Viking CPU Simulator', 980, 710, <Simulator />)
+    this.spawnWindow('Simulator', 'Viking CPU Simulator', 970, 710, <Simulator />);
   }
 
   closeAbout() {
@@ -24,15 +22,24 @@ class Home extends Component {
   }
 
   spawnWindow(name, description, width, height, elem) {
-    let window = <Window key={this.keyIndex++} name={name} description={description} width={width + 'px'} height={height + 'px'}>{elem}</Window>;
-    this.setState({windows: this.state.windows.concat([window])});
+    return new Promise((resolve, reject) => {
+      try {
+        let ref = createRef();
+        let window = <Window key={this.keyIndex++} name={name} description={description} width={width + 'px'} height={height + 'px'} ref={ref}>{elem}</Window>;
+        let winObj = {window, ref};
+        this.windowObjs.push(winObj);
+        this.setState({}, () => { resolve(winObj) });
+      } catch (exc) {
+        reject(exc);
+      }
+    })
   }
 
   render() {
     return (
       <div className={styles.container}>
         <div className={styles.windowsContainer} ref={this.windowsContainerRef}>
-          { this.state.windows }
+          { this.windowObjs.map(x=>x.window) }
         </div>
         <div className={styles.aboutContainer} ref={this.aboutRef}>
           <div>Developed by <a href="https://github.com/vanflux">vanflux</a></div>

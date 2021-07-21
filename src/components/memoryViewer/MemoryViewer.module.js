@@ -1,4 +1,5 @@
-import { Component, createRef } from "react";
+import React, { Component, createRef } from "react";
+import { useResizeDetector } from "react-resize-detector";
 import styles from './MemoryViewer.module.css'
 
 class MemoryViewer extends Component {
@@ -15,7 +16,7 @@ class MemoryViewer extends Component {
     this.memoryAreaRef = createRef();
 
     this.columns = 8;
-    this.rowsToShow = 16;
+    this.rowsToShow = 32;
     this.rows = 0;
     this.dataItemBytes = 2;
     this.scrollHeight = 0;
@@ -126,8 +127,22 @@ class MemoryViewer extends Component {
   setScrollHeight(height) {
     this.memoryScrollAuxRef.current.style.height = height + 'px';
   }
+  
+  handleHeight(height) {
+    if (this.tbodyRef.current === null) return;
+    if (this.tbodyRef.current.childNodes.length === 0) return;
+    let firstRow = this.tbodyRef.current.childNodes[0];
+    let rowHeight = firstRow.getBoundingClientRect().height;
+    let newRowsToShow = Math.floor(height / rowHeight) - 1;
+    if (newRowsToShow <= 0) return;
+    if (this.rowsToShow === newRowsToShow) return;
+    this.rowsToShow = newRowsToShow;
+    this.recreateTable(this.getData());
+  }
 
   recreateTable(data) {
+    if (this.tbodyRef.current == null) return;
+
     let rowsCount = Math.ceil(data.length / this.columns);
     
     let html = '';
@@ -176,7 +191,7 @@ class MemoryViewer extends Component {
   }
 
   getDataCount() {
-    return this.memory.getDataLength();
+    return this.memory.getMemoryRegions().io;
   }
 
   getData() {
@@ -187,15 +202,22 @@ class MemoryViewer extends Component {
   }
 
   render() { 
+    const MemoryArea = () => {
+      const { height, ref } = useResizeDetector();
+      return (
+        <div ref={ref} className={styles.memoryAreaContainer}>
+          {this.handleHeight(height)}
+          <table className={styles.memoryArea} ref={this.memoryAreaRef}>
+            <tbody ref={this.tbodyRef}></tbody>
+          </table>
+        </div>
+      );
+    };
     return (
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.memoryScroll} ref={this.memoryScrollRef}><div ref={this.memoryScrollAuxRef}></div></div>
-          <div className={styles.memoryAreaContainer}>
-            <table className={styles.memoryArea} ref={this.memoryAreaRef}>
-              <tbody ref={this.tbodyRef}></tbody>
-            </table>
-          </div>
+          <MemoryArea />
         </div>
       </div>
     );

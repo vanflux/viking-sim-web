@@ -18,6 +18,7 @@ class Program extends Component {
     this.onLoadDefaultRequest = typeof props.onLoadDefaultRequest === 'function' ? props.onLoadDefaultRequest : ()=>{};
     this.onSaveRequest = typeof props.onSaveRequest === 'function' ? props.onSaveRequest : ()=>{};
 
+    this.portsSymbols = props.portsSymbols || [];
     this.opsNames = operationsManager.getOperationNames();
     this.regNames = props.curArchitecture.getRegisterNames();
 
@@ -36,6 +37,7 @@ class Program extends Component {
 
       operationKeywords: this.opsNames,
       registerKeywords: this.regNames,
+      portsSymbols: this.portsSymbols,
 
       decimalNumbers: /\d+/,
       hexNumbers: /(?:0x|0B)[\da-fA-F]+/,
@@ -51,12 +53,13 @@ class Program extends Component {
               cases: {
                 '@operationKeywords': 'operationKeywords',
                 '@registerKeywords': 'registersKeyWords',
+                '@portsSymbols': 'portsKeyWords',
                 '@default': 'symbols',
               },
             },
           ],
 
-          [/^[ \t]*(?:(?:\/\/)|;).*$/,    'comment'],
+          [/\/\/.*$/,    'comment'],
 
           // strings
           [/"([^"\\]|\\.)*$/, 'string.invalid' ],  // non-teminated string
@@ -79,8 +82,14 @@ class Program extends Component {
           documentation: '...',
           kind: monaco.languages.CompletionItemKind.Function,
           insertText: opName,
-        }));
-        return { suggestions: suggestions };
+        })).concat(this.portsSymbols.map(portSymbol => ({
+          label: portSymbol,
+          detail: '...',
+          documentation: '...',
+          kind: monaco.languages.CompletionItemKind.Function,
+          insertText: portSymbol,
+        })));
+        return { suggestions };
       }
     });
     
@@ -90,9 +99,13 @@ class Program extends Component {
       rules: [
         { token: 'operationKeywords', foreground: 'e55283' },
         { token: 'registersKeyWords', foreground: 'ffc100' },
+        { token: 'portsKeyWords', foreground: '40f0e3' },
         { token: 'symbols', foreground: '92db57' },
         { token: 'number', foreground: '7d81ea' }
       ],
+      colors: {
+        "editor.background": '#00000000'
+      },
     });
   }
 

@@ -4,9 +4,9 @@
 
 .container {
   display: flex;
+  flex: 1;
   flex-direction: column;
   overflow: hidden;
-  width: 200px;
 }
 
 .title {
@@ -26,10 +26,13 @@
 .content table {
   flex: 1;
   color: rgb(88, 88, 88);
+  margin: 0px 5px;
+  width: 100%;
 }
 
 .symbolName, .symbolValue {
   color: rgb(197, 192, 202);
+  text-align: start;
 }
 
 .symbolName:hover, .symbolValue:hover {

@@ -28,23 +28,27 @@ export default class LineParser {
     }
 
     parse(line) {
-        let { symbol, rest } = this.getSymbolAndRest(line);
-        let sanitizedRest = rest.trim();
+        // Extract symbols
+        let result = this.getSymbolAndRest(line);
+        let { symbol } = result;
+        let sanitizedRest = result.rest.trim();
 
+        // Extract comments
+        result = this.commentParser.parse(sanitizedRest);
+        let { hasComment, comment } = result;
+        sanitizedRest = result.rest.trim();
+        
+        // Extract instructions / data
         let instruction = null;
         let data = null;
-        let { isComment, comment } = this.commentParser.parse(rest);
-
-        if (!isComment) {
-            if (sanitizedRest.length > 0) {
-                if (this.instructionParser.isInstruction(sanitizedRest)) {
-                    instruction = this.instructionParser.parse(sanitizedRest);
-                } else {
-                    data = this.dataParser.parse(sanitizedRest);
-                }
+        if (sanitizedRest.length > 0) {
+            if (this.instructionParser.isInstruction(sanitizedRest)) {
+                instruction = this.instructionParser.parse(sanitizedRest);
+            } else {
+                data = this.dataParser.parse(sanitizedRest);
             }
         }
 
-        return { isComment, comment, symbol, instruction, data };
+        return { hasComment, comment, symbol, instruction, data };
     }
 }

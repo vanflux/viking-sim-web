@@ -1,6 +1,7 @@
 .container {
   border: rgb(22, 22, 22) 3px solid;
   outline: rgb(117, 117, 117) 1px solid;
+  background-color: #1E1E1E;
   border-radius: 4px;
   overflow: auto;
   resize: both;

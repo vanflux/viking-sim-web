@@ -16,6 +16,11 @@ function setup() {
             'r6': { code: 6, aliases: [ 'lr' ] },
             'r7': { code: 7, aliases: [ 'sp' ] },
         },
+        memoryRegions: {
+            codeData: 0x0000,
+            stack: 0xdffe,
+            io: 0xf000,
+        },
     });
     _32 = new Architecture({
         bitWidth: 32,
@@ -28,6 +33,11 @@ function setup() {
             'r5': { code: 5, aliases: [ 'sr' ] },
             'r6': { code: 6, aliases: [ 'lr' ] },
             'r7': { code: 7, aliases: [ 'sp' ] },
+        },
+        memoryRegions: {
+            codeData: 0x00000000,
+            stack: 0x000ffffc,
+            io: 0xf0000000,
         },
     });
 }
