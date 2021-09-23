@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/viking-sim-web/static/css/main.e9791a5d.chunk.css",
-    "main.js": "/viking-sim-web/static/js/main.2e686bbf.chunk.js",
-    "main.js.map": "/viking-sim-web/static/js/main.2e686bbf.chunk.js.map",
+    "main.js": "/viking-sim-web/static/js/main.68fb8efd.chunk.js",
+    "main.js.map": "/viking-sim-web/static/js/main.68fb8efd.chunk.js.map",
     "runtime-main.js": "/viking-sim-web/static/js/runtime-main.ecd06abe.js",
     "runtime-main.js.map": "/viking-sim-web/static/js/runtime-main.ecd06abe.js.map",
-    "static/js/2.281475ca.chunk.js": "/viking-sim-web/static/js/2.281475ca.chunk.js",
-    "static/js/2.281475ca.chunk.js.map": "/viking-sim-web/static/js/2.281475ca.chunk.js.map",
+    "static/js/2.8e68d372.chunk.js": "/viking-sim-web/static/js/2.8e68d372.chunk.js",
+    "static/js/2.8e68d372.chunk.js.map": "/viking-sim-web/static/js/2.8e68d372.chunk.js.map",
     "index.html": "/viking-sim-web/index.html",
     "static/css/main.e9791a5d.chunk.css.map": "/viking-sim-web/static/css/main.e9791a5d.chunk.css.map",
-    "static/js/2.281475ca.chunk.js.LICENSE.txt": "/viking-sim-web/static/js/2.281475ca.chunk.js.LICENSE.txt",
-    "static/media/AssembleIcon.317ec53f.svg": "/viking-sim-web/static/media/AssembleIcon.317ec53f.svg",
-    "static/media/ResetIcon.185470da.svg": "/viking-sim-web/static/media/ResetIcon.185470da.svg",
-    "static/media/StepIcon.4e668f1b.svg": "/viking-sim-web/static/media/StepIcon.4e668f1b.svg"
+    "static/js/2.8e68d372.chunk.js.LICENSE.txt": "/viking-sim-web/static/js/2.8e68d372.chunk.js.LICENSE.txt",
+    "static/media/AssembleIcon.f57532ba.svg": "/viking-sim-web/static/media/AssembleIcon.f57532ba.svg",
+    "static/media/ResetIcon.0e827492.svg": "/viking-sim-web/static/media/ResetIcon.0e827492.svg",
+    "static/media/StepIcon.a7b0c075.svg": "/viking-sim-web/static/media/StepIcon.a7b0c075.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.ecd06abe.js",
-    "static/js/2.281475ca.chunk.js",
+    "static/js/2.8e68d372.chunk.js",
     "static/css/main.e9791a5d.chunk.css",
-    "static/js/main.2e686bbf.chunk.js"
+    "static/js/main.68fb8efd.chunk.js"
   ]
 }
