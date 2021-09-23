@@ -45,8 +45,8 @@ Pseudo operações 🟡 (em desenvolvimento):
 | ✔️ HCF    | Halt and catch fire             | ✔️ POP    | Pop to register from stack      |
 | ✔️ LDI    | Load immediate                  | ✔️ PUSH   | Push register to stack          |
 | ✔️ LSL    | Logical shift left              | ⭕ ret    | Return                          |
-| ⭕ nop    | No operation                    | ⭕ not    | One’s complement                |
-| ⭕ neg    | Two’s complement                | ⭕ mov    | Move register                   |
+| ✔️ nop    | No operation                    | ✔️ not    | One’s complement                |
+| ✔️ neg    | Two’s complement                | ✔️ mov    | Move register                   |
 | ⭕ rol    | Rotate left through carry       | ⭕ lsrm   | Logical shift right multiple    |
 | ⭕ asrm   | Arithmetic shift right multiple | ⭕ lslm   | Logical shift left multiple     |
 | ⭕ seq    | Set if equal                    | ⭕ sne    | Set if not equal                |
